@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -33,16 +33,32 @@ public:
   /// The various KeyEvent types.
   ///
   enum Type {
-    /// Key-Down type
+    ///
+    /// Key-Down event type. (Does not trigger accelerator commands in WebCore)
+    ///
+    /// @NOTE: You should probably use RawKeyDown instead when a physical key
+    ///        is pressed. This member is only here for historic compatibility
+    ///        with WebCore's key event types.
+    ///
     kType_KeyDown,
 
-    /// Key-Up type
+    ///
+    /// Key-Up event type. Use this when a physical key is released.
+    ///
     kType_KeyUp,
 
-    /// Raw Key-Down type
+    ///
+    /// Raw Key-Down type. Use this when a physical key is pressed.
+    ///
+    /// @NOTE: You should use RawKeyDown for physical key presses since it
+    ///        allows WebCore to do additional command translation.
+    ///
     kType_RawKeyDown,
 
-    /// Character input type (this event generates text in input fields)
+    ///
+    /// Character input event type. Use this when the OS generates text from
+    /// a physical key being pressed (eg, WM_CHAR on Windows).
+    ///
     kType_Char,
   };
 

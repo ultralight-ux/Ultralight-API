@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 

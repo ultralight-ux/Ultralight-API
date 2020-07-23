@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -239,7 +239,6 @@ class UExport Bitmap : public RefCounted {
   ///
   virtual bool WritePNG(const char* path) = 0;
 
-
   ///
   /// Make a resized copy of this bitmap by writing to a pre-allocated
   /// destination bitmap.
@@ -256,6 +255,12 @@ class UExport Bitmap : public RefCounted {
   ///          both the source and destination are non-empty.
   ///
   virtual bool Resample(Ref<Bitmap> destination, bool high_quality) = 0;
+
+  ///
+  /// This converts a BGRA bitmap to RGBA bitmap and vice-versa by swapping
+  /// the red and blue channels.
+  ///
+  virtual void SwapRedBlueChannels() = 0;
 
 protected:
   Bitmap();

@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 
@@ -53,7 +53,23 @@
 
 #endif
 
-#define ULTRALIGHT_VERSION "1.1.0"
+#define ULTRALIGHT_VERSION "1.2.0"
+#define ULTRALIGHT_VERSION_MAJOR 1
+#define ULTRALIGHT_VERSION_MINOR 2
+#define ULTRALIGHT_VERSION_PATCH 0
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+UExport const char* UltralightVersionString();
+UExport uint32_t UltralightVersionMajor();
+UExport uint32_t UltralightVersionMinor();
+UExport uint32_t UltralightVersionPatch();
+
+#ifdef __cplusplus
+}
+#endif
 
 ///
 /// @mainpage Ultralight C++ API Reference
@@ -75,5 +91,5 @@
 /// - GitHub: <https://github.com/ultralight-ux/ultralight> -- Report issues and browse code
 ///
 /// @section copyright_sec Copyright
-/// Documentation is copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Documentation is Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///

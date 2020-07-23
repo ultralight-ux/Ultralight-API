@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 /*
 * Portions of the below code are derived from 'RefPtr.h' from Apple's WTF,
@@ -62,6 +62,7 @@ class UExport RefCounted {
 inline void adopted(const void*) { }
 
 template<typename T> class Ref;
+template<typename T> class RefPtr;
 
 ///
 /// @brief  Helper for wrapping new objects with the Ref smart pointer.

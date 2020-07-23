@@ -15,11 +15,13 @@
 #include "Defines.h"
 #include <Ultralight/RefPtr.h>
 #include <Ultralight/Listener.h>
+#include <Ultralight/Bitmap.h>
 
 namespace ultralight {
 
 class Monitor;
 class OverlayManager;
+class Surface;
 
 ///
 /// Interface for all Window-related events. @see Window::set_listener
@@ -36,9 +38,9 @@ public:
   ///
   /// Called when the Window is resized.
   ///
-  /// @param  width   The new width (in device coordinates).
+  /// @param  width   The new width (in pixels).
   ///
-  /// @param  height  The new height (in device coordinates).
+  /// @param  height  The new height (in pixels).
   ///
   virtual void OnResize(uint32_t width, uint32_t height) = 0;
 };
@@ -87,12 +89,12 @@ public:
   virtual WindowListener* listener() = 0;
 
   ///
-  /// Get the window width (in device coordinates).
+  /// Get the window width (in pixels).
   ///
   virtual uint32_t width() const = 0;
 
   ///
-  /// Get the window height (in device coordinates).
+  /// Get the window height (in pixels).
   ///
   virtual uint32_t height() const = 0;
 
@@ -130,6 +132,20 @@ public:
   /// Convert pixels to device coordinates using the current DPI scale.
   ///
   virtual int PixelsToDevice(int val) const = 0;
+
+  ///
+  /// Draw a surface directly to window, used only by CPU renderer
+  ///
+  virtual void DrawSurface(int x, int y, Surface* surface) {}
+
+  ///
+  /// Get the underlying native window handle.
+  ///
+  /// @note This is:  - HWND on Windows
+  ///                 - NSWindow* on macOS
+  ///                 - GLFWwindow* on Linux
+  ///
+  virtual void* native_handle() const = 0;
 
 protected:
   virtual ~Window();

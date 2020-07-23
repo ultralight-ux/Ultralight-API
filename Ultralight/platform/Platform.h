@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -17,9 +17,12 @@
 namespace ultralight {
 
 struct Config;
+class Logger;
 class GPUDriver;
 class FontLoader;
 class FileSystem;
+class Clipboard;
+class SurfaceFactory;
 
 ///
 /// @brief  Platform singleton to configure Ultralight and provide user-defined
@@ -27,12 +30,6 @@ class FileSystem;
 ///
 /// @note  All of these settings and user-defined interfaces should be set
 ///        BEFORE creating the Renderer.
-///
-///        A default GPUDriver and FontLoader are provided, you must provide
-///        your own FileSystem interface if you want to load local files.
-///
-///        For more info about the defaults @see DefaultGPUDriver and
-///        @see DefaultFontLoader.
 ///
 class UExport Platform {
  public:
@@ -54,13 +51,23 @@ class UExport Platform {
   virtual const Config& config() const = 0;
 
   ///
+  /// Set the Logger (to handle error messages and debug output).
+  ///
+  /// @param  logger  A user-defined Logger implementation, ownership remains
+  ///                 with the caller.
+  ///
+  virtual void set_logger(Logger* logger) = 0;
+
+  ///
+  /// Get the Logger
+  ///
+  virtual Logger* logger() const = 0;
+
+  ///
   /// Set the GPU Driver (will handle all rendering)
   ///
   /// @param  gpu_driver  A user-defined GPUDriver implementation, ownership
   ///                     remains with the caller.
-  ///
-  /// @note  If you never call this, the default driver will be used instead.
-  ///        @see DefaultGPUDriver
   ///
   virtual void set_gpu_driver(GPUDriver* gpu_driver) = 0;
 
@@ -74,9 +81,6 @@ class UExport Platform {
   ///
   /// @param  font_loader  A user-defined FontLoader implementation, ownership
   ///                      remains with the caller.
-  ///
-  /// @note  If you never call this, the default font loader will be used
-  ///        instead. @see DefaultFontLoader
   ///
   virtual void set_font_loader(FontLoader* font_loader) = 0;
 
@@ -97,20 +101,41 @@ class UExport Platform {
   /// Get the File System
   ///
   virtual FileSystem* file_system() const = 0;
+
+  ///
+  /// Set the Clipboard (will be used for all clipboard operations)
+  ///
+  /// @param  clipboard  A user-defined Clipboard implementation, ownership
+  ///                    remains with the caller.
+  ///
+  virtual void set_clipboard(Clipboard* clipboard) = 0;
+
+  ///
+  /// Get the Clipboard
+  ///
+  virtual Clipboard* clipboard() const = 0;
+
+  ///
+  /// Set the SurfaceFactory
+  ///
+  /// This can be used to provide a platform-specific bitmap surface for View
+  /// to paint into when the CPU renderer is enabled. See View::surface().
+  ///
+  /// @param  surface_factory  A user-defined SurfaceFactory implementation,
+  ///                          ownership remains with the caller.
+  ///
+  /// @note  A default BitmapSurfaceFactory is defined if you never call this,
+  ///        View::surface() can be safely cast to BitmapSurface.
+  ///
+  virtual void set_surface_factory(SurfaceFactory* surface_factory) = 0;
+
+  ///
+  /// Get the SurfaceFactory
+  ///
+  /// @note  A default BitmapSurfaceFactory is set by default, View::surface()
+  ///        can be safely cast to BitmapSurface if you don't define your own.
+  ///
+  virtual SurfaceFactory* surface_factory() const = 0;
 };
-
-///
-/// The default GPU driver is an OpenGL driver that paints each View to an
-/// offscreen bitmap (@see View::bitmap). This is lazily-initialized.
-///
-UExport GPUDriver* DefaultGPUDriver();
-
-///
-/// The default Font Loader uses the native font loader API for the platform.
-/// 
-/// @note  Windows and macOS font loading is implemented but Linux is still in
-///        progress-- currently just loads an embedded Roboto font.
-///
-UExport FontLoader* DefaultFontLoader();
 
 }  // namespace ultralight

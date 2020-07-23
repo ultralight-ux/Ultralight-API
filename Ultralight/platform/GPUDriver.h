@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #pragma warning(disable: 4251)
@@ -110,11 +110,11 @@ enum UExport ShaderType {
 /// GPU state description.
 ///
 struct UExport GPUState {
-  /// Viewport width in logical units (multiply by device scale to get pixels).
-  float viewport_width;
+  /// Viewport width in pixels
+  uint32_t viewport_width;
   
-  /// Viewport height in logical units (multiply by device scale to get pixels).
-  float viewport_height;
+  /// Viewport height in pixels
+  uint32_t viewport_height;
   
   /// Transform matrix-- you should multiply this with the screen-space
   /// orthographic projection matrix then pass to the vertex shader.
@@ -154,29 +154,29 @@ struct UExport GPUState {
   /// Whether or not scissor testing should be used for the current draw command.
   bool enable_scissor;
   
-  /// The scissor rect to use for scissor testing (in logical units, you should
-  /// multiply by device scale to get pixel units).
-  Rect scissor_rect;
+  /// The scissor rect to use for scissor testing (units in pixels)
+  IntRect scissor_rect;
 };
 
 ///
 /// Command types, used by Command::command_type
 ///
 enum UExport CommandType {
-  kCommandType_ClearRenderBuffer,  // Corresponds to ClearRenderBuffer()
-  kCommandType_DrawGeometry,       // Corresponds to DrawGeometry()
+  kCommandType_ClearRenderBuffer,
+  kCommandType_DrawGeometry,
 };
 
 ///
-/// Command description, handling one of these should result in either a call to
-/// GPUDriver::ClearRenderBuffer or GPUDriver::DrawGeometry.
+/// Command description.
 ///
 struct UExport Command {
   uint8_t command_type;    // The type of command to dispatch.
   GPUState gpu_state;      // GPU state parameters for current command.
-  uint32_t geometry_id;    // Used with DrawGeometry, the geometry ID to bind.
-  uint32_t indices_count;  // Used with DrawGeometry, the number of indices.
-  uint32_t indices_offset; // Used with DrawGeometry, the index to start from.
+
+  /// The following members are only used with kCommandType_DrawGeometry
+  uint32_t geometry_id;    // The geometry ID to bind
+  uint32_t indices_count;  // The number of indices
+  uint32_t indices_offset; // The index to start from
 };
 
 ///
@@ -191,10 +191,6 @@ struct UExport CommandList {
 
 ///
 /// @brief  GPUDriver interface, dispatches GPU calls to the native driver.
-///
-/// By default, Ultralight uses an offscreen, OpenGL GPUDriver that draws each
-/// View to an offscreen Bitmap (@see View::bitmap). You can override this to
-/// provide your own GPUDriver and integrate directly with your own 3D engine.
 ///
 /// This is intended to be implemented by users and defined before creating the
 /// Renderer. @see Platform::set_gpu_driver
@@ -235,15 +231,6 @@ public:
                              Ref<Bitmap> bitmap) = 0;
 
   ///
-  /// Bind a texture to a certain texture unit.
-  ///
-  /// **NOTE**: This is not called directly by Ultralight-- you are expected to
-  ///           call this from your own implementation during drawing.
-  ///
-  virtual void BindTexture(uint8_t texture_unit,
-                           uint32_t texture_id) = 0;
-
-  ///
   /// Destroy a texture.
   ///
   virtual void DestroyTexture(uint32_t texture_id) = 0;
@@ -258,22 +245,6 @@ public:
   ///
   virtual void CreateRenderBuffer(uint32_t render_buffer_id,
                                   const RenderBuffer& buffer) = 0;
-
-  ///
-  /// Bind a render buffer.
-  ///
-  /// **NOTE**: This is not called directly by Ultralight-- you are expected to
-  ///           call this from your own implementation during drawing.
-  ///
-  virtual void BindRenderBuffer(uint32_t render_buffer_id) = 0;
-
-  ///
-  /// Clear a render buffer (flush pixels to 0).
-  ///
-  /// **NOTE**: This is not called directly by Ultralight-- you are expected to
-  ///           call this from your own implementation during drawing.
-  ///
-  virtual void ClearRenderBuffer(uint32_t render_buffer_id) = 0;
 
   ///
   /// Destroy a render buffer
@@ -300,14 +271,6 @@ public:
                               const IndexBuffer& indices) = 0;
 
   ///
-  /// Draw geometry using the specific index count/offset and GPUState.
-  ///
-  virtual void DrawGeometry(uint32_t geometry_id,
-                            uint32_t indices_count,
-                            uint32_t indices_offset,
-                            const GPUState& state) = 0;
-
-  ///
   /// Destroy geometry.
   ///
   virtual void DestroyGeometry(uint32_t geometry_id) = 0;
@@ -316,20 +279,6 @@ public:
   /// Update command list (you should copy the commands to your own structure).
   ///
   virtual void UpdateCommandList(const CommandList& list) = 0;
-
-  ///
-  /// Check if any commands need drawing.
-  ///
-  virtual bool HasCommandsPending() = 0;
-
-  ///
-  /// Iterate through the current command list and dispatch commands. The list
-  /// should be cleared at the end of this operation.
-  ///
-  /// **NOTE**: This is not called directly by Ultralight-- you are expected to
-  ///           call this from your own implementation during drawing.
-  ///
-  virtual void DrawCommandList() = 0;
 };
 
 }  // namespace ultralight
