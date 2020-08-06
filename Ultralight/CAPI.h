@@ -1476,6 +1476,364 @@ typedef struct {
   ULLoggerLogMessageCallback log_message;
 } ULLogger;
 
+
+/******************************************************************************
+ * GPUDriver
+ *****************************************************************************/
+
+///
+/// @note  This pragma pack(push, 1) command is important! Vertex layouts
+///	       should not be padded with any bytes.
+///
+#pragma pack(push, 1)
+
+///
+/// Render buffer description.
+///
+typedef struct {
+  unsigned int texture_id;  // The backing texture for this RenderBuffer
+  unsigned int width;       // The width of the RenderBuffer texture
+  unsigned int height;      // The height of the RenderBuffer texture
+  bool has_stencil_buffer;  // Currently unused, always false.
+  bool has_depth_buffer;    // Currently unsued, always false.
+} ULRenderBuffer;
+
+///
+/// Vertex layout for path vertices.
+///
+typedef struct {
+  float pos[2];
+  unsigned char color[4];
+  float obj[2];
+} ULVertex_2f_4ub_2f;
+
+///
+/// Vertex layout for quad vertices.
+///
+typedef struct {
+  float pos[2];
+  unsigned char color[4];
+  float tex[2];
+  float obj[2];
+  float data0[4];
+  float data1[4];
+  float data2[4];
+  float data3[4];
+  float data4[4];
+  float data5[4];
+  float data6[4];
+} ULVertex_2f_4ub_2f_2f_28f;
+
+///
+/// Vertex formats.
+///
+typedef enum {
+  kVertexBufferFormat_2f_4ub_2f,
+  kVertexBufferFormat_2f_4ub_2f_2f_28f,
+} ULVertexBufferFormat;
+
+///
+/// Vertex buffer data.
+///
+typedef struct {
+  ULVertexBufferFormat format;
+  unsigned int size;
+  unsigned char* data;
+} ULVertexBuffer;
+
+///
+/// Vertex index type.
+///
+typedef unsigned int ULIndexType;
+
+///
+/// Vertex index buffer data.
+///
+typedef struct {
+  unsigned int size;
+  unsigned char* data;
+} ULIndexBuffer;
+
+///
+/// Shader types, used with ULGPUState::shader_type
+///
+/// Each of these correspond to a vertex/pixel shader pair. You can find
+/// stock shader code for these in the `shaders` folder of the AppCore repo.
+///
+typedef enum {
+  kShaderType_Fill,      // Shader program for quad geometry
+  kShaderType_FillPath,  // Shader program for path geometry
+} ULShaderType;
+
+///
+/// Raw 4x4 matrix as an array of floats
+///
+typedef struct {
+  float data[16];
+} ULMatrix4x4;
+
+///
+/// 4-component float vector
+///
+typedef struct {
+  float value[4];
+} ULvec4;
+
+///
+/// GPU State description.
+///
+typedef struct {
+  /// Viewport width in pixels
+  unsigned int viewport_width;
+
+  /// Viewport height in pixels
+  unsigned int viewport_height;
+
+  /// Transform matrix-- you should multiply this with the screen-space
+  /// orthographic projection matrix then pass to the vertex shader.
+  ULMatrix4x4 transform;
+
+  /// Whether or not we should enable texturing for the current draw command.
+  bool enable_texturing;
+
+  /// Whether or not we should enable blending for the current draw command.
+  /// If blending is disabled, any drawn pixels should overwrite existing.
+  /// Mainly used so we can modify alpha values of the RenderBuffer during
+  /// scissored clears.
+  bool enable_blend;
+
+  /// The vertex/pixel shader program pair to use for the current draw command.
+  /// You should cast this to ShaderType to get the corresponding enum.
+  unsigned char shader_type;
+
+  /// The render buffer to use for the current draw command.
+  unsigned int render_buffer_id;
+
+  /// The texture id to bind to slot #1. (Will be 0 if none)
+  unsigned int texture_1_id;
+
+  /// The texture id to bind to slot #2. (Will be 0 if none)
+  unsigned int texture_2_id;
+
+  /// The texture id to bind to slot #3. (Will be 0 if none)
+  unsigned int texture_3_id;
+
+  /// The following four members are passed to the pixel shader via uniforms.
+  float uniform_scalar[8];
+  ULvec4 uniform_vector[8];
+  unsigned int clip_size;
+  ULMatrix4x4 clip[8];
+
+  /// Whether or not scissor testing should be used for the current draw
+  /// command.
+  bool enable_scissor;
+
+  /// The scissor rect to use for scissor testing (units in pixels)
+  ULIntRect scissor_rect;
+} ULGPUState;
+
+///
+/// Command types, used with ULCommand::command_type
+///
+typedef enum {
+  kCommandType_ClearRenderBuffer,
+  kCommandType_DrawGeometry,
+} ULCommandType;
+
+///
+/// Command description.
+///
+typedef struct {
+  unsigned char command_type;    // The type of command to dispatch.
+  ULGPUState gpu_state;          // GPU state parameters for current command.
+
+  /// The following members are only used with kCommandType_DrawGeometry
+  unsigned int geometry_id;    // The geometry ID to bind
+  unsigned int indices_count;  // The number of indices
+  unsigned int indices_offset; // The index to start from
+} ULCommand;
+
+///
+/// Command list, @see ULGPUDriverUpdateCommandList
+typedef struct {
+  unsigned int size;
+  ULCommand* commands;
+} ULCommandList;
+
+#pragma pack(pop)
+
+///
+/// The callback invoked when the GPUDriver will begin dispatching commands
+/// (such as CreateTexture and UpdateCommandList) during the current call to
+/// ulRender().
+///
+typedef void
+(*ULGPUDriverBeginSynchronize) ();
+
+///
+/// The callback invoked when the GPUDriver has finished dispatching commands.
+/// during the current call to ulRender().
+///
+typedef void
+(*ULGPUDriverEndSynchronize) ();
+
+///
+/// The callback invoked when the GPUDriver wants to get the next available
+/// texture ID.
+///
+typedef unsigned int
+(*ULGPUDriverNextTextureId) ();
+
+///
+/// The callback invoked when the GPUDriver wants to create a texture with a
+/// certain ID and optional bitmap.
+///
+/// **NOTE**: If the Bitmap is empty (ulBitmapIsEmpty), then a RTT Texture
+///           should be created instead. This will be used as a backing
+///           texture for a new RenderBuffer.
+///
+typedef void
+(*ULGPUDriverCreateTexture) (unsigned int texture_id,
+                             ULBitmap bitmap);
+
+///
+/// The callback invoked when the GPUDriver wants to update an existing non-RTT
+/// texture with new bitmap data.
+///
+typedef void
+(*ULGPUDriverUpdateTexture) (unsigned int texture_id,
+                             ULBitmap bitmap);
+
+///
+/// The callback invoked when the GPUDriver wants to destroy a texture.
+///
+typedef void
+(*ULGPUDriverDestroyTexture) (unsigned int texture_id);
+
+///
+/// The callback invoked when the GPUDriver wants to generate the next
+/// available render buffer ID.
+///
+typedef unsigned int
+(*ULGPUDriverNextRenderBufferId) ();
+
+///
+/// The callback invoked when the GPUDriver wants to create a render buffer
+/// with certain ID and buffer description.
+///
+typedef void
+(*ULGPUDriverCreateRenderBuffer) (unsigned int render_buffer_id,
+                                  ULRenderBuffer buffer);
+
+///
+/// The callback invoked when the GPUDriver wants to destroy a render buffer
+///
+typedef void
+(*ULGPUDriverDestroyRenderBuffer) (unsigned int render_buffer_id);
+
+///
+/// The callback invoked when the GPUDriver wants to generate the next
+/// available geometry ID.
+///
+typedef unsigned int
+(*ULGPUDriverNextGeometryId) ();
+
+///
+/// The callback invoked when the GPUDriver wants to create geometry with
+/// certain ID and vertex/index data.
+///
+typedef void
+(*ULGPUDriverCreateGeometry) (unsigned int geometry_id,
+                              ULVertexBuffer vertices,
+                              ULIndexBuffer indices);
+
+///
+/// The callback invoked when the GPUDriver wants to update existing geometry
+/// with new vertex/index data.
+///
+typedef void
+(*ULGPUDriverUpdateGeometry) (unsigned int geometry_id,
+                              ULVertexBuffer vertices,
+                              ULIndexBuffer indices);
+
+///
+/// The callback invoked when the GPUDriver wants to destroy geometry.
+///
+typedef void
+(*ULGPUDriverDestroyGeometry) (unsigned int geometry_id);
+
+///
+/// The callback invoked when the GPUDriver wants to update the command list
+/// (you should copy the commands to your own structure).
+///
+typedef void
+(*ULGPUDriverUpdateCommandList) (ULCommandList list);
+
+typedef struct {
+  ULGPUDriverBeginSynchronize begin_synchronize;
+  ULGPUDriverEndSynchronize end_synchronize;
+  ULGPUDriverNextTextureId next_texture_id;
+  ULGPUDriverCreateTexture create_texture;
+  ULGPUDriverUpdateTexture update_texture;
+  ULGPUDriverDestroyTexture destroy_texture;
+  ULGPUDriverNextRenderBufferId next_render_buffer_id;
+  ULGPUDriverCreateRenderBuffer create_render_buffer;
+  ULGPUDriverDestroyRenderBuffer destroy_render_buffer;
+  ULGPUDriverNextGeometryId next_geometry_id;
+  ULGPUDriverCreateGeometry create_geometry;
+  ULGPUDriverUpdateGeometry update_geometry;
+  ULGPUDriverDestroyGeometry destroy_geometry;
+  ULGPUDriverUpdateCommandList update_command_list;
+} ULGPUDriver;
+
+///
+/// Sets up an orthographic projection matrix with a certain viewport width
+/// and height, multiplies it by 'transform', and returns the result.
+///
+/// This should be used to calculate the model-view projection matrix for the
+/// vertex shaders using the current ULGPUState.
+///
+/// The 'flip_y' can be optionally used to flip the Y coordinate-space.
+/// (Usually flip_y == true for OpenGL)
+///
+ULExport ULMatrix4x4 ulApplyProjection(ULMatrix4x4 transform,
+                                       float viewport_width,
+                                       float viewport_height,
+                                       bool flip_y);
+
+/******************************************************************************
+ * Clipboard
+ *****************************************************************************/
+
+///
+/// The callback invoked when the library wants to clear the system's
+/// clipboard.
+///
+typedef void
+(*ULClipboardClear) ();
+
+///
+/// The callback invoked when the library wants to read from the system's
+/// clipboard.
+///
+/// You should store the result (if any) in 'result'.
+///
+typedef void
+(*ULClipboardReadPlainText) (ULString result);
+
+///
+/// The callback invoked when the library wants to write to the system's
+/// clipboard.
+///
+typedef void
+(*ULClipboardWritePlainText) (ULString text);
+
+typedef struct {
+  ULClipboardClear clear;
+  ULClipboardReadPlainText read_plain_text;
+  ULClipboardWritePlainText write_plain_text;
+} ULClipboard;
+
 /******************************************************************************
  * Platform
  *****************************************************************************/
@@ -1525,6 +1883,34 @@ ULExport void ulPlatformSetFileSystem(ULFileSystem file_system);
 /// You should call this before ulCreateRenderer() or ulCreateApp().
 ///
 ULExport void ulPlatformSetSurfaceDefinition(ULSurfaceDefinition surface_definition);
+
+///
+/// Set a custom GPUDriver implementation.
+///
+/// This should be used if you have enabled the GPU renderer in the Config and
+/// are using ulCreateRenderer() (which does not provide its own GPUDriver
+/// implementation).
+///
+/// The GPUDriver interface is used by the library to dispatch GPU calls to
+/// your native GPU context (eg, D3D11, Metal, OpenGL, Vulkan, etc.) There
+/// are reference implementations for this interface in the AppCore repo.
+///
+/// You should call this before ulCreateRenderer().
+///
+ULExport void ulPlatformSetGPUDriver(ULGPUDriver gpu_driver);
+
+///
+/// Set a custom Clipboard implementation.
+///
+/// This should be used if you are using ulCreateRenderer() (which does not
+/// provide its own clipboard implementation).
+///
+/// The Clipboard interface is used by the library to make calls to the
+/// system's native clipboard (eg, cut, copy, paste).
+///
+/// You should call this before ulCreateRenderer().
+///
+ULExport void ulPlatformSetClipboard(ULClipboard clipboard);
 
 #ifdef __cplusplus
 }
