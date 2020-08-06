@@ -1668,21 +1668,21 @@ typedef struct {
 /// ulRender().
 ///
 typedef void
-(*ULGPUDriverBeginSynchronize) ();
+(*ULGPUDriverBeginSynchronizeCallback) ();
 
 ///
 /// The callback invoked when the GPUDriver has finished dispatching commands.
 /// during the current call to ulRender().
 ///
 typedef void
-(*ULGPUDriverEndSynchronize) ();
+(*ULGPUDriverEndSynchronizeCallback) ();
 
 ///
 /// The callback invoked when the GPUDriver wants to get the next available
 /// texture ID.
 ///
 typedef unsigned int
-(*ULGPUDriverNextTextureId) ();
+(*ULGPUDriverNextTextureIdCallback) ();
 
 ///
 /// The callback invoked when the GPUDriver wants to create a texture with a
@@ -1693,97 +1693,97 @@ typedef unsigned int
 ///           texture for a new RenderBuffer.
 ///
 typedef void
-(*ULGPUDriverCreateTexture) (unsigned int texture_id,
-                             ULBitmap bitmap);
+(*ULGPUDriverCreateTextureCallback) (unsigned int texture_id,
+                                     ULBitmap bitmap);
 
 ///
 /// The callback invoked when the GPUDriver wants to update an existing non-RTT
 /// texture with new bitmap data.
 ///
 typedef void
-(*ULGPUDriverUpdateTexture) (unsigned int texture_id,
-                             ULBitmap bitmap);
+(*ULGPUDriverUpdateTextureCallback) (unsigned int texture_id,
+                                     ULBitmap bitmap);
 
 ///
 /// The callback invoked when the GPUDriver wants to destroy a texture.
 ///
 typedef void
-(*ULGPUDriverDestroyTexture) (unsigned int texture_id);
+(*ULGPUDriverDestroyTextureCallback) (unsigned int texture_id);
 
 ///
 /// The callback invoked when the GPUDriver wants to generate the next
 /// available render buffer ID.
 ///
 typedef unsigned int
-(*ULGPUDriverNextRenderBufferId) ();
+(*ULGPUDriverNextRenderBufferIdCallback) ();
 
 ///
 /// The callback invoked when the GPUDriver wants to create a render buffer
 /// with certain ID and buffer description.
 ///
 typedef void
-(*ULGPUDriverCreateRenderBuffer) (unsigned int render_buffer_id,
-                                  ULRenderBuffer buffer);
+(*ULGPUDriverCreateRenderBufferCallback) (unsigned int render_buffer_id,
+                                          ULRenderBuffer buffer);
 
 ///
 /// The callback invoked when the GPUDriver wants to destroy a render buffer
 ///
 typedef void
-(*ULGPUDriverDestroyRenderBuffer) (unsigned int render_buffer_id);
+(*ULGPUDriverDestroyRenderBufferCallback) (unsigned int render_buffer_id);
 
 ///
 /// The callback invoked when the GPUDriver wants to generate the next
 /// available geometry ID.
 ///
 typedef unsigned int
-(*ULGPUDriverNextGeometryId) ();
+(*ULGPUDriverNextGeometryIdCallback) ();
 
 ///
 /// The callback invoked when the GPUDriver wants to create geometry with
 /// certain ID and vertex/index data.
 ///
 typedef void
-(*ULGPUDriverCreateGeometry) (unsigned int geometry_id,
-                              ULVertexBuffer vertices,
-                              ULIndexBuffer indices);
+(*ULGPUDriverCreateGeometryCallback) (unsigned int geometry_id,
+                                      ULVertexBuffer vertices,
+                                      ULIndexBuffer indices);
 
 ///
 /// The callback invoked when the GPUDriver wants to update existing geometry
 /// with new vertex/index data.
 ///
 typedef void
-(*ULGPUDriverUpdateGeometry) (unsigned int geometry_id,
-                              ULVertexBuffer vertices,
-                              ULIndexBuffer indices);
+(*ULGPUDriverUpdateGeometryCallback) (unsigned int geometry_id,
+                                      ULVertexBuffer vertices,
+                                      ULIndexBuffer indices);
 
 ///
 /// The callback invoked when the GPUDriver wants to destroy geometry.
 ///
 typedef void
-(*ULGPUDriverDestroyGeometry) (unsigned int geometry_id);
+(*ULGPUDriverDestroyGeometryCallback) (unsigned int geometry_id);
 
 ///
 /// The callback invoked when the GPUDriver wants to update the command list
 /// (you should copy the commands to your own structure).
 ///
 typedef void
-(*ULGPUDriverUpdateCommandList) (ULCommandList list);
+(*ULGPUDriverUpdateCommandListCallback) (ULCommandList list);
 
 typedef struct {
-  ULGPUDriverBeginSynchronize begin_synchronize;
-  ULGPUDriverEndSynchronize end_synchronize;
-  ULGPUDriverNextTextureId next_texture_id;
-  ULGPUDriverCreateTexture create_texture;
-  ULGPUDriverUpdateTexture update_texture;
-  ULGPUDriverDestroyTexture destroy_texture;
-  ULGPUDriverNextRenderBufferId next_render_buffer_id;
-  ULGPUDriverCreateRenderBuffer create_render_buffer;
-  ULGPUDriverDestroyRenderBuffer destroy_render_buffer;
-  ULGPUDriverNextGeometryId next_geometry_id;
-  ULGPUDriverCreateGeometry create_geometry;
-  ULGPUDriverUpdateGeometry update_geometry;
-  ULGPUDriverDestroyGeometry destroy_geometry;
-  ULGPUDriverUpdateCommandList update_command_list;
+  ULGPUDriverBeginSynchronizeCallback begin_synchronize;
+  ULGPUDriverEndSynchronizeCallback end_synchronize;
+  ULGPUDriverNextTextureIdCallback next_texture_id;
+  ULGPUDriverCreateTextureCallback create_texture;
+  ULGPUDriverUpdateTextureCallback update_texture;
+  ULGPUDriverDestroyTextureCallback destroy_texture;
+  ULGPUDriverNextRenderBufferIdCallback next_render_buffer_id;
+  ULGPUDriverCreateRenderBufferCallback create_render_buffer;
+  ULGPUDriverDestroyRenderBufferCallback destroy_render_buffer;
+  ULGPUDriverNextGeometryIdCallback next_geometry_id;
+  ULGPUDriverCreateGeometryCallback create_geometry;
+  ULGPUDriverUpdateGeometryCallback update_geometry;
+  ULGPUDriverDestroyGeometryCallback destroy_geometry;
+  ULGPUDriverUpdateCommandListCallback update_command_list;
 } ULGPUDriver;
 
 ///
@@ -1810,7 +1810,7 @@ ULExport ULMatrix4x4 ulApplyProjection(ULMatrix4x4 transform,
 /// clipboard.
 ///
 typedef void
-(*ULClipboardClear) ();
+(*ULClipboardClearCallback) ();
 
 ///
 /// The callback invoked when the library wants to read from the system's
@@ -1819,19 +1819,19 @@ typedef void
 /// You should store the result (if any) in 'result'.
 ///
 typedef void
-(*ULClipboardReadPlainText) (ULString result);
+(*ULClipboardReadPlainTextCallback) (ULString result);
 
 ///
 /// The callback invoked when the library wants to write to the system's
 /// clipboard.
 ///
 typedef void
-(*ULClipboardWritePlainText) (ULString text);
+(*ULClipboardWritePlainTextCallback) (ULString text);
 
 typedef struct {
-  ULClipboardClear clear;
-  ULClipboardReadPlainText read_plain_text;
-  ULClipboardWritePlainText write_plain_text;
+  ULClipboardClearCallback clear;
+  ULClipboardReadPlainTextCallback read_plain_text;
+  ULClipboardWritePlainTextCallback write_plain_text;
 } ULClipboard;
 
 /******************************************************************************
