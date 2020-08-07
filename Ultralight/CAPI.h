@@ -1482,12 +1482,6 @@ typedef struct {
  *****************************************************************************/
 
 ///
-/// @note  This pragma pack(push, 1) command is important! Vertex layouts
-///	       should not be padded with any bytes.
-///
-#pragma pack(push, 1)
-
-///
 /// Render buffer description.
 ///
 typedef struct {
@@ -1499,7 +1493,15 @@ typedef struct {
 } ULRenderBuffer;
 
 ///
+/// @note  This pragma pack(push, 1) command is important! Vertex layouts
+///	       should not be padded with any bytes.
+///
+#pragma pack(push, 1)
+
+///
 /// Vertex layout for path vertices.
+///
+/// (this struct's members aligned on single-byte boundaries)
 ///
 typedef struct {
   float pos[2];
@@ -1509,6 +1511,8 @@ typedef struct {
 
 ///
 /// Vertex layout for quad vertices.
+///
+/// (this struct's members aligned on single-byte boundaries)
 ///
 typedef struct {
   float pos[2];
@@ -1523,6 +1527,11 @@ typedef struct {
   float data5[4];
   float data6[4];
 } ULVertex_2f_4ub_2f_2f_28f;
+
+///
+/// End single-byte alignment.
+///
+#pragma pack(pop)
 
 ///
 /// Vertex formats.
@@ -1621,7 +1630,7 @@ typedef struct {
   /// The following four members are passed to the pixel shader via uniforms.
   float uniform_scalar[8];
   ULvec4 uniform_vector[8];
-  unsigned int clip_size;
+  unsigned char clip_size;
   ULMatrix4x4 clip[8];
 
   /// Whether or not scissor testing should be used for the current draw
@@ -1659,8 +1668,6 @@ typedef struct {
   unsigned int size;
   ULCommand* commands;
 } ULCommandList;
-
-#pragma pack(pop)
 
 ///
 /// The callback invoked when the GPUDriver will begin dispatching commands
