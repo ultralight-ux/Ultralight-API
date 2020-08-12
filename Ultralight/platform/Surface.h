@@ -22,15 +22,22 @@ namespace ultralight {
 ///
 /// Offscreen pixel buffer surface. (Premultiplied BGRA 32-bit format)
 ///
-/// Each View is rendered to a Surface (@see View::surface) when the GPU
-/// renderer is disabled (the default).
+/// When using the CPU renderer, each View is painted to its own Surface.
 ///
-/// The default Surface implementation is BitmapSurface, you can retrieve the
-/// underlying bitmap via BitmapSurface::bitmap.
+/// You can provide your own Surface implementation to make the renderer
+/// paint directly to a block of memory controlled by you (this is useful for
+/// lower-latency uploads to GPU memory or other platform-specific bitmaps).
 ///
-/// You can also provide your own Surface implementation via SurfaceFactory.
-/// This can be used to wrap a platform-specific GPU texture, Windows DIB,
-/// macOS CGImage, or any other pixel buffer target for display on screen.
+/// A default Surface implementation, BitmapSurface, is automatically
+/// provided by the library when you call Renderer::Create() without defining
+/// a custom SurfaceFactory.
+///
+/// To provide your own custom Surface implementation, you should inherit
+/// from this class, handle the virtual member functions, and then define a
+/// custom SurfaceFactory that creates/destroys an instance of your class.
+/// After that, you should pass an instance of your custom SurfaceFactory class
+/// to `Platform::instance().set_font_loader()` before calling App::Create()
+/// or Renderer::Create().
 ///
 class UExport Surface {
 public:
@@ -176,7 +183,8 @@ protected:
 };
 
 ///
-/// Get the default Bitmap Surface Factory singleton. (Do not destroy this, owned by the library).
+/// Get the default Bitmap Surface Factory singleton. (Do not destroy this,
+/// this singleton is owned by the library).
 ///
 UExport SurfaceFactory* GetBitmapSurfaceFactory();
 

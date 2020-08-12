@@ -18,7 +18,8 @@
 namespace ultralight {
 
 ///
-/// The winding order for front-facing triangles.
+/// The winding order for front-facing triangles. (This is only used when the
+/// GPU renderer is enabled)
 ///
 /// @note  In most 3D engines, there is the concept that triangles have a
 ///        a "front" and a "back". All the front-facing triangles (eg, those

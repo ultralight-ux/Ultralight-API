@@ -34,11 +34,24 @@ const FileHandle invalidFileHandle = (FileHandle)-1;
 ///
 /// @brief  FileSystem interface.
 ///          
-/// This is used for loading File URLs (eg, <file:///page.html>). If you don't
-/// implement this interface, you will not be able to load any File URLs.
+/// This is used for loading File URLs (eg, <file:///page.html>).
 ///
-/// This is intended to be implemented by users and defined before creating the
-/// Renderer. @see Platform::set_file_system.
+/// You can provide the library with your own FileSystem implementation so that
+/// file assets are loaded from your own pipeline (useful if you would like
+/// to encrypt/compress your file assets or ship it in a custom format).
+///
+/// AppCore automatically provides a platform-specific implementation of this
+/// that loads files from a local directory when you call App::Create().
+///
+/// If you are using Renderer::Create() instead, you will need to provide your
+/// own implementation via `Platform::instance().set_file_system(). For
+/// convenience, you can still use AppCore's file system implementation--
+/// see the helper functions defined in <AppCore/Platform.h>.
+///
+/// To provide your own custom FileSystem implementation, you should inherit
+/// from this class, handle the virtual member functions, and then pass an
+/// instance of your class to `Platform::instance().set_file_system()` before
+/// calling Renderer::Create() or App::Create().
 ///
 class UExport FileSystem {
 public:

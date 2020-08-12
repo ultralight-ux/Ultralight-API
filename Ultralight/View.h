@@ -26,11 +26,25 @@
 namespace ultralight {
 
 ///
-/// @brief A View is similar to a tab in a browser-- you load web content into
-///	       it and display it however you want. @see Renderer::CreateView
+/// @brief The View class is used to load and display web content.
 ///
-/// @note  The API is currently not thread-safe, all calls must be made on the
-///        main thread.
+/// View is an offscreen web-page container that can be used to display
+/// web-content in your application.
+///
+/// You can load content into a View via View::LoadURL() or View::LoadHTML()
+/// and interact with it via View::FireMouseEvent() and similar API.
+///
+/// When displaying a View, the API is different depending on whether you
+/// are using the CPU renderer or the GPU renderer:
+///
+/// When using the CPU renderer, you would get the underlying pixel-buffer
+/// surface for a View via View::surface().
+///
+/// When using the GPU renderer, you would get the underlying render target
+/// and texture information via View::render_target().
+///
+/// @note  The API is not currently thread-safe, all calls must be made on the
+///        same thread that the Renderer/App was created on.
 ///
 class UExport View : public RefCounted {
 public:
@@ -60,7 +74,7 @@ public:
   virtual bool is_loading() = 0;
 
   ///
-  /// Get the RenderTarget for the View.
+  /// Get the offscreen RenderTarget for the View.
   ///
   /// @note  Only valid when the GPU renderer is enabled in Config.
   ///
@@ -70,11 +84,10 @@ public:
   virtual RenderTarget render_target() = 0;
 
   ///
-  /// Get the Surface for the View (native pixel buffer container).
+  /// Get the offscreen Surface for the View (pixel-buffer container).
   ///
-  /// @note  Only valid when the GPU renderer is disabled in Config.
-  ///
-  ///        (Will return a nullptr when the GPU renderer is enabled.)
+  /// @note  Only valid when the CPU is enabled (will return a nullptr
+  ///        otherwise)
   ///
   ///        The default Surface is BitmapSurface but you can provide your
   ///        own Surface implementation via Platform::set_surface_factory.

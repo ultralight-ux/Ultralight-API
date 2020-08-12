@@ -78,17 +78,17 @@ UExport uint32_t UltralightVersionPatch();
 ///
 /// Hi there, welcome to the C++ API Reference for Ultralight!
 ///
-/// Ultralight is a fast, lightweight HTML UI engine for desktop apps.
+/// Ultralight is a fast, lightweight HTML UI engine for desktop apps and games.
 ///
 /// If this is your first time exploring the API, we recommend
 /// starting with ultralight::Renderer and ultralight::View.
 ///
 ///
 /// @section usefullinks_sec Useful Links
-/// - Home:   <https://ultralig.ht> -- Get the latest binaries
-/// - Docs:   <https://docs.ultralig.ht> -- API overview, code snippets, tutorials and more!
-/// - Slack:  <http://chat.ultralig.ht/> -- Stuck? Have questions? Come chat with us!
-/// - GitHub: <https://github.com/ultralight-ux/ultralight> -- Report issues and browse code
+/// - Home:     <https://ultralig.ht> -- Get the latest binaries
+/// - Docs:     <https://docs.ultralig.ht> -- API overview, code snippets, tutorials and more!
+/// - Discord:  <http://chat.ultralig.ht/> -- Stuck? Have questions? Come chat with us!
+/// - GitHub:   <https://github.com/ultralight-ux/ultralight> -- Report issues and browse code
 ///
 /// @section copyright_sec Copyright
 /// Documentation is Copyright (C) 2020 Ultralight, Inc. All rights reserved.

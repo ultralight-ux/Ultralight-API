@@ -2,12 +2,14 @@
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>
-#include <Ultralight/String16.h>
 #include <Ultralight/String8.h>
+#include <Ultralight/String16.h>
+#include <Ultralight/String32.h>
 #include <Ultralight/String.h>
 #include <Ultralight/Bitmap.h>
 #include <Ultralight/Buffer.h>
 #include <Ultralight/View.h>
+#include <Ultralight/Session.h>
 #include <Ultralight/KeyCodes.h>
 #include <Ultralight/KeyEvent.h>
 #include <Ultralight/Listener.h>
@@ -22,3 +24,6 @@
 #include <Ultralight/platform/GPUDriver.h>
 #include <Ultralight/platform/FileSystem.h>
 #include <Ultralight/platform/FontLoader.h>
+#include <Ultralight/platform/Surface.h>
+#include <Ultralight/platform/Clipboard.h>
+#include <Ultralight/platform/Logger.h>

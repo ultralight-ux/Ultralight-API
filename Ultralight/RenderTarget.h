@@ -24,9 +24,9 @@ namespace ultralight {
 /// @brief  Rendering details for a View, to be used with your own GPUDriver
 ///
 /// When using your own GPUDriver, each View is rendered to an offscreen
-/// texture that you must display on a quad in your engine. This struct
-/// provides all the details you need to render the View texture in your
-/// engine.
+/// texture that you can display on a 3D quad in your application. This struct
+/// provides all the details you need to display the corresponding texture in
+/// your application.
 ///
 struct UExport RenderTarget {
   ///

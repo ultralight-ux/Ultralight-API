@@ -20,11 +20,8 @@
 namespace ultralight {
 
 ///
-/// @brief  The core of Ultralight. You should initialize it after setting up
-///         your Platform config and drivers.
-///
-/// This singleton class manages the lifetime of all Views (@see View) and
-/// coordinates all painting, rendering, network requests, and event dispatch.
+/// @brief  This singleton manages the lifetime of all Views (@see View) and
+///         coordinates painting, network requests, and event dispatch.
 ///
 /// @note  You don't have to create this instance directly if you use the
 ///        AppCore API. The App class will automatically create a Renderer and
@@ -39,17 +36,16 @@ public:
   /// and allows you to manage your own runloop and painting. This method is
   /// recommended for those wishing to integrate the library into a game.
   ///
-  /// You should set up all your Platform config, file-system, font loader,
-  /// and drivers before calling this function. (@see <Ultralight/Platform.h>)
+  /// You should set up your Platform config, file-system, font loader, 
+  /// and surface-factories/gpu-drivers before calling this function. 
+  /// (@see <Ultralight/Platform.h>)
   ///
   /// At a minimum, you will need to define a FontLoader ahead of time or this
   /// call will fail. You can use the platform's native FontLoader by calling:
   /// <pre>
+  ///   /// This function is defined in <AppCore/Platform.h>
   ///   Platform::instance().set_font_loader(GetPlatformFontLoader());
   /// </pre>
-  ///
-  /// @note GetPlatformFontLoader() and other native platform handlers are
-  ///       are defined in <AppCore/Platform.h>.
   ///
   /// @note  You should only create one Renderer per application lifetime.
   ///
@@ -112,12 +108,12 @@ public:
   virtual void Update() = 0;
 
   ///
-  /// Render all active views to their respective surfaces (or if the GPU
-  /// renderer is enabled, this will render all views to display lists and
-  /// dispatch calls to GPUDriver).
+  /// Render all active views to their respective render-targets/surfaces.
   ///
   /// You should call this once per frame (usually in synchrony with the
   /// monitor's refresh rate).
+  ///
+  /// @note  Views are only repainted if they actually need painting.
   ///
   virtual void Render() = 0;
 
@@ -128,7 +124,8 @@ public:
   virtual void PurgeMemory() = 0;
 
   ///
-  /// Print detailed memory usage statistics to the log. (@see Platform::set_logger())
+  /// Print detailed memory usage statistics to the log.
+  /// (@see Platform::set_logger())
   ///
   virtual void LogMemoryUsage() = 0;
 

@@ -27,19 +27,19 @@ public:
   /// The various MouseEvent types.
   ///
   enum Type {
-	///
+	  ///
     /// Mouse moved type
-	///
+	  ///
     kType_MouseMoved,
 
-	///
+	  ///
     /// Mouse button pressed type
-	///
+	  ///
     kType_MouseDown,
 
-	///
+	  ///
     /// Mouse button released type
-	///
+	  ///
     kType_MouseUp,
   };
 

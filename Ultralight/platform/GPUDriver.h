@@ -192,8 +192,12 @@ struct UExport CommandList {
 ///
 /// @brief  GPUDriver interface, dispatches GPU calls to the native driver.
 ///
-/// This is intended to be implemented by users and defined before creating the
-/// Renderer. @see Platform::set_gpu_driver
+/// This is automatically provided for you when you use App::Create(), AppCore
+/// provides platform-specific implementations of GPUDriver for each OS.
+///
+/// If you are using Renderer::Create(), you will need to provide your own
+/// implementation of this class if you have enabled the GPU renderer in the
+/// Config. @see Platform::set_gpu_driver
 ///
 class UExport GPUDriver {
 public:

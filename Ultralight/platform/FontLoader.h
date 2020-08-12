@@ -67,10 +67,20 @@ protected:
 ///
 /// Every operating system has its own library of installed system fonts. The
 /// FontLoader interface is used to lookup these fonts and fetch the actual
-/// font data (raw TTF/OTF file data) given a certain font description.
+/// font data (raw TTF/OTF file data) for a given a certain font description.
 ///
-/// This is intended to be implemented by users and defined before creating the
-/// Renderer. @see Platform::set_font_loader
+/// AppCore automatically provides a platform-specific implementation of this
+/// that loads installed fonts from the OS when you call App::Create().
+///
+/// If you are using Renderer::Create() instead, you will need to provide your
+/// own implementation via `Platform::instance().set_font_loader(). For
+/// convenience, you can still use AppCore's font loader implementation--
+/// see the helper functions defined in <AppCore/Platform.h>.
+///
+/// To provide your own custom FontLoader implementation, you should inherit
+/// from this class, handle the virtual member functions, and then pass an
+/// instance of your class to `Platform::instance().set_font_loader()` before
+/// calling Renderer::Create() or App::Create().
 ///
 class UExport FontLoader {
 public:

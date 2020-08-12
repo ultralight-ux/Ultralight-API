@@ -22,8 +22,11 @@ namespace ultralight {
 ///          
 /// This is used for reading and writing data to the platform Clipboard.
 ///
-/// This is intended to be implemented by users and defined before creating the
-/// Renderer. @see Platform::set_clipboard.
+/// AppCore automatically provides a platform-specific implementation of this
+/// that cuts/copies/pastes to the OS clipboard when you call App::Create().
+///
+/// If you are using Renderer::Create() instead, you will need to provide your
+/// own implementation of this. @see Platform::set_clipboard().
 ///
 class UExport Clipboard {
 public:
