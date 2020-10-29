@@ -557,7 +557,7 @@ ULExport ULString ulSessionGetDiskPath(ULSession session);
 ///
 ULExport ULView ulCreateView(ULRenderer renderer, unsigned int width,
                              unsigned int height, bool transparent,
-                             ULSession session);
+                             ULSession session, bool force_cpu_renderer);
 
 ///
 /// Destroy a View.
@@ -654,12 +654,22 @@ ULExport void ulViewUnlockJSContext(ULView view);
 ///
 /// @param  js_string  The string of JavaScript to evaluate.
 ///
-/// @param  exception  A string to store the exception in, if any. Pass NULL
-///                    if you don't care about exceptions.
+/// @param  exception  The address of a ULString to store a description of the
+///                    last exception. Pass NULL to ignore this. Don't destroy
+///                    the exception string returned, it's owned by the View.
 ///
-/// @note Don't destroy the returned string, it is owned by the View. This
-///       value is reset with every call-- if you want to retain it you should
-///       copy the result to a new string via ulCreateStringFromCopy().
+/// @note Don't destroy the returned string, it's owned by the View. This value
+///       is reset with every call-- if you want to retain it you should copy
+///       the result to a new string via ulCreateStringFromCopy().
+///
+/// @note An example of using this API:
+///       <pre>
+///         ULString script = ulCreateString("1 + 1");
+///         ULString exception;
+///         ULString result = ulViewEvaluateScript(view, script, &exception);
+///         /* Use the result ("2") and exception description (if any) here. */
+///         ulDestroyString(script);
+///       </pre>
 ///
 ULExport ULString ulViewEvaluateScript(ULView view, ULString js_string, ULString* exception);
 

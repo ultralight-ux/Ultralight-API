@@ -129,7 +129,7 @@ public:
   /// This is a string identifying the key that was pressed. This can be
   /// generated from the virtual_key_code via the GetKeyIdentifierFromVirtualKeyCode()
   /// utility function. You can find the full list of key identifiers at:
-  ///   <http://www.w3.org/TR/DOM-Level-3-Events/keyset.html>
+  ///   <https://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/keyset.html>
   ///
   String key_identifier;
 

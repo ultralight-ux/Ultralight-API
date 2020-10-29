@@ -99,7 +99,8 @@ public:
   ///          (nullable).
   ///
   virtual Ref<View> CreateView(uint32_t width, uint32_t height,
-	                             bool transparent, RefPtr<Session> session) = 0;
+	                             bool transparent, RefPtr<Session> session,
+                               bool force_cpu_renderer = false) = 0;
 
   ///
   /// Update timers and dispatch internal callbacks. You should call this often

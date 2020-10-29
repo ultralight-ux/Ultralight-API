@@ -144,12 +144,17 @@ class UExport Bitmap : public RefCounted {
   virtual uint32_t bpp() const = 0;
 
   ///
-  /// Get the number of bytes between each row (this is always >= width * bpp)
+  /// Get the number of bytes between each row of pixels.
+  ///
+  /// @note  This value is usually calculated as width * bytes_per_pixel (bpp) 
+  ///        but it may be larger due to alignment rules in the allocator.
   ///
   virtual uint32_t row_bytes() const = 0;
 
   ///
   /// Get the size in bytes of the pixel buffer.
+  ///
+  /// @note  Size is calculated as row_bytes() * height().
   ///
   virtual size_t size() const = 0;
 
