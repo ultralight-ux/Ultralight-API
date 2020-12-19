@@ -318,7 +318,7 @@ typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRet
 /// **Note**: Expected to run from within an instance of 'MyClass', note the
 ///           'this' keyword in the macro.
 ///
-#define BindJSCallback(fn) (JSCallback)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
+#define BindJSCallback(fn) (ultralight::JSCallback)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
 
 ///
 /// Macro to help bind C++ member functions to a JSCallbackWithRetval
@@ -328,7 +328,7 @@ typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRet
 /// **Note**: Expected to run from within an instance of 'MyClass', note the
 ///           'this' keyword in the macro.
 ///
-#define BindJSCallbackWithRetval(fn) (JSCallbackWithRetval)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
+#define BindJSCallbackWithRetval(fn) (ultralight::JSCallbackWithRetval)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
 
 /// 
 /// Wrapper for JSObject property value (JSValue subclass). Allows new value assignment
