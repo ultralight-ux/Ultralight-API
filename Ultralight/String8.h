@@ -12,7 +12,7 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
+#include "Defines.h"
 #include <stddef.h>
 
 namespace ultralight {

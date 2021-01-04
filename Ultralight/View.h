@@ -12,16 +12,16 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
-#include <Ultralight/RefPtr.h>
-#include <Ultralight/KeyEvent.h>
-#include <Ultralight/JavaScript.h>
-#include <Ultralight/MouseEvent.h>
-#include <Ultralight/ScrollEvent.h>
-#include <Ultralight/RenderTarget.h>
-#include <Ultralight/Bitmap.h>
-#include <Ultralight/Listener.h>
-#include <Ultralight/platform/Surface.h>
+#include "Defines.h"
+#include "RefPtr.h"
+#include "KeyEvent.h"
+#include "JavaScript.h"
+#include "MouseEvent.h"
+#include "ScrollEvent.h"
+#include "RenderTarget.h"
+#include "Bitmap.h"
+#include "Listener.h"
+#include "platform/Surface.h"
 
 namespace ultralight {
 

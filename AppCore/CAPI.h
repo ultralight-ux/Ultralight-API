@@ -14,7 +14,7 @@
 #ifndef APPCORE_CAPI_H
 #define APPCORE_CAPI_H
 
-#include <Ultralight/CAPI.h>
+#include "../Ultralight/CAPI.h"
 
 #if defined(__WIN32__) || defined(_WIN32)
 #  if defined(APPCORE_IMPLEMENTATION)

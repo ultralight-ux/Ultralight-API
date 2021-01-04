@@ -12,8 +12,8 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
-#include <Ultralight/RefPtr.h>
+#include "Defines.h"
+#include "RefPtr.h"
 #include <stddef.h>
 
 namespace ultralight {

@@ -12,10 +12,10 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
-#include <Ultralight/String8.h>
-#include <Ultralight/String16.h>
-#include <Ultralight/String32.h>
+#include "Defines.h"
+#include "String8.h"
+#include "String16.h"
+#include "String32.h"
 
 namespace ultralight {
 

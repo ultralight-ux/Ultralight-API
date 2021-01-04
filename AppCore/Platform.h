@@ -13,10 +13,10 @@
 ///
 #pragma once
 #include "Defines.h"
-#include <Ultralight/String.h>
-#include <Ultralight/platform/FontLoader.h>
-#include <Ultralight/platform/FileSystem.h>
-#include <Ultralight/platform/Logger.h>
+#include "../Ultralight/String.h"
+#include "../Ultralight/platform/FontLoader.h"
+#include "../Ultralight/platform/FileSystem.h"
+#include "../Ultralight/platform/Logger.h"
 
 namespace ultralight {
 

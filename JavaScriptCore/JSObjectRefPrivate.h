@@ -26,7 +26,7 @@
 #ifndef JSObjectRefPrivate_h
 #define JSObjectRefPrivate_h
 
-#include <JavaScriptCore/JSObjectRef.h>
+#include "JSObjectRef.h"
 
 #ifdef __cplusplus
 extern "C" {

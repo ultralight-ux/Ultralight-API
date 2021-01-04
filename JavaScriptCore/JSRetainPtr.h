@@ -28,8 +28,8 @@
 
 #pragma once
 
-#include <JavaScriptCore/JSContextRef.h>
-#include <JavaScriptCore/JSStringRef.h>
+#include "JSContextRef.h"
+#include "JSStringRef.h"
 #include <algorithm>
 
 #if !defined(WARN_UNUSED_RETURN)
