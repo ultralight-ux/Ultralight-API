@@ -25,6 +25,62 @@
 
 namespace ultralight {
 
+struct UExport ViewConfig {
+  ///
+  /// When enabled, the View will be rendered to an offscreen GPU texture
+  /// using the GPU driver set in Platform::set_gpu_driver. You can fetch
+  /// details for the texture via View::render_target.
+  ///
+  /// When disabled (the default), the View will be rendered to an offscreen
+  /// pixel buffer. This pixel buffer can optionally be provided by the user--
+  /// for more info see <Ultralight/platform/Surface.h> and View::surface.
+  ///
+  bool is_accelerated = false;
+
+  bool is_transparent = false;
+
+  double initial_device_scale = 1.0;
+
+  bool initial_focus = true;
+
+  ///
+  /// Whether or not images should be enabled.
+  ///
+  bool enable_images = true;
+
+  ///
+  /// Whether or not JavaScript should be enabled.
+  ///
+  bool enable_javascript = true;
+
+  ///
+  /// Default font-family to use.
+  ///
+  String16 font_family_standard = "Times New Roman";
+
+  ///
+  /// Default font-family to use for fixed fonts. (pre/code)
+  ///
+  String16 font_family_fixed = "Courier New";
+
+  ///
+  /// Default font-family to use for serif fonts.
+  ///
+  String16 font_family_serif = "Times New Roman";
+
+  ///
+  /// Default font-family to use for sans-serif fonts.
+  ///
+  String16 font_family_sans_serif = "Arial";
+
+  ///
+  /// Default user-agent string.
+  ///
+  String16 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                          "AppleWebKit/608.3.10 (KHTML, like Gecko) "
+                          "Ultralight/1.3.0 Safari/608.3.10";
+};
+
 ///
 /// @brief The View class is used to load and display web content.
 ///
@@ -67,6 +123,14 @@ public:
   /// Get the height of the View, in pixels.
   ///
   virtual uint32_t height() const = 0;
+
+  virtual double device_scale() const = 0;
+
+  virtual void set_device_scale(double scale) = 0;
+
+  virtual bool is_accelerated() const = 0;
+
+  virtual bool is_transparent() const = 0;
 
   ///
   /// Check if the main frame of the page is currently loading.

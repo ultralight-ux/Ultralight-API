@@ -50,6 +50,7 @@ extern "C" {
 typedef struct C_Config* ULConfig;
 typedef struct C_Renderer* ULRenderer;
 typedef struct C_Session* ULSession;
+typedef struct C_ViewConfig* ULViewConfig;
 typedef struct C_View* ULView;
 typedef struct C_Bitmap* ULBitmap;
 typedef struct C_String* ULString;
@@ -309,39 +310,11 @@ ULExport void ulConfigSetResourcePath(ULConfig config, ULString resource_path);
 ULExport void ulConfigSetCachePath(ULConfig config, ULString cache_path);
 
 ///
-/// When enabled, each View will be rendered to an offscreen GPU texture
-/// using the GPU driver set in ulPlatformSetGPUDriver. You can fetch
-/// details for the texture via ulViewGetRenderTarget.
-///
-/// When disabled (the default), each View will be rendered to an offscreen
-/// pixel buffer. This pixel buffer can optionally be provided by the user--
-/// for more info see ulViewGetSurface.
-///
-ULExport void ulConfigSetUseGPURenderer(ULConfig config, bool use_gpu);
-
-///
-/// Set the amount that the application DPI has been scaled, used for
-/// scaling device coordinates to pixels and oversampling raster shapes
-/// (Default = 1.0).
-///
-ULExport void ulConfigSetDeviceScale(ULConfig config, double value);
-
-///
 /// The winding order for front-facing triangles. @see FaceWinding
 ///
 /// Note: This is only used with custom GPUDrivers
 ///
 ULExport void ulConfigSetFaceWinding(ULConfig config, ULFaceWinding winding);
-
-///
-/// Set whether images should be enabled (Default = True).
-///
-ULExport void ulConfigSetEnableImages(ULConfig config, bool enabled);
-
-///
-/// Set whether JavaScript should be eanbled (Default = True).
-///
-ULExport void ulConfigSetEnableJavaScript(ULConfig config, bool enabled);
 
 ///
 /// The hinting algorithm to use when rendering fonts. (Default = kFontHinting_Normal)
@@ -355,34 +328,6 @@ ULExport void ulConfigSetFontHinting(ULConfig config, ULFontHinting font_hinting
 /// (Default = 1.8)
 ///
 ULExport void ulConfigSetFontGamma(ULConfig config, double font_gamma);
-
-///
-/// Set default font-family to use (Default = Times New Roman).
-///
-ULExport void ulConfigSetFontFamilyStandard(ULConfig config,
-                                            ULString font_name);
-
-///
-/// Set default font-family to use for fixed fonts, eg <pre> and <code>
-/// (Default = Courier New).
-///
-ULExport void ulConfigSetFontFamilyFixed(ULConfig config, ULString font_name);
-
-///
-/// Set default font-family to use for serif fonts (Default = Times New Roman).
-///
-ULExport void ulConfigSetFontFamilySerif(ULConfig config, ULString font_name);
-
-///
-/// Set default font-family to use for sans-serif fonts (Default = Arial).
-///
-ULExport void ulConfigSetFontFamilySansSerif(ULConfig config,
-                                             ULString font_name);
-
-///
-/// Set user agent string (See <Ultralight/platform/Config.h> for the default).
-///
-ULExport void ulConfigSetUserAgent(ULConfig config, ULString agent_string);
 
 ///
 /// Set user stylesheet (CSS) (Default = Empty).
@@ -547,6 +492,81 @@ ULExport unsigned long long ulSessionGetId(ULSession session);
 ULExport ULString ulSessionGetDiskPath(ULSession session);
 
 /******************************************************************************
+ * ViewConfig
+ *****************************************************************************/
+
+///
+/// Create view configuration with default values (see <Ultralight/platform/View.h>).
+///
+ULExport ULViewConfig ulCreateViewConfig();
+
+///
+/// Destroy view configuration.
+///
+ULExport void ulDestroyViewConfig(ULViewConfig config);
+
+///
+/// When enabled, the View will be rendered to an offscreen GPU texture
+/// using the GPU driver set in ulPlatformSetGPUDriver. You can fetch
+/// details for the texture via ulViewGetRenderTarget.
+///
+/// When disabled (the default), the View will be rendered to an offscreen
+/// pixel buffer surface. This pixel buffer can optionally be provided by the user--
+/// for more info see ulViewGetSurface.
+///
+ULExport void ulViewConfigSetIsAccelerated(ULViewConfig config, bool is_accelerated);
+
+///
+/// Set whether images should be enabled (Default = True).
+///
+ULExport void ulViewConfigSetIsTransparent(ULViewConfig config, bool is_transparent);
+
+///
+/// Set the amount that the application DPI has been scaled, used for
+/// scaling device coordinates to pixels and oversampling raster shapes
+/// (Default = 1.0).
+///
+ULExport void ulViewConfigSetInitialDeviceScale(ULViewConfig config, double initial_device_scale);
+
+ULExport void ulViewConfigSetInitialFocus(ULViewConfig config, bool is_focused);
+
+///
+/// Set whether images should be enabled (Default = True).
+///
+ULExport void ulViewConfigSetEnableImages(ULViewConfig config, bool enabled);
+
+///
+/// Set whether JavaScript should be eanbled (Default = True).
+///
+ULExport void ulViewConfigSetEnableJavaScript(ULViewConfig config, bool enabled);
+
+///
+/// Set default font-family to use (Default = Times New Roman).
+///
+ULExport void ulViewConfigSetFontFamilyStandard(ULViewConfig config, ULString font_name);
+
+///
+/// Set default font-family to use for fixed fonts, eg <pre> and <code>
+/// (Default = Courier New).
+///
+ULExport void ulViewConfigSetFontFamilyFixed(ULViewConfig config, ULString font_name);
+
+///
+/// Set default font-family to use for serif fonts (Default = Times New Roman).
+///
+ULExport void ulViewConfigSetFontFamilySerif(ULViewConfig config, ULString font_name);
+
+///
+/// Set default font-family to use for sans-serif fonts (Default = Arial).
+///
+ULExport void ulViewConfigSetFontFamilySansSerif(ULViewConfig config, ULString font_name);
+
+///
+/// Set user agent string (See <Ultralight/platform/Config.h> for the default).
+///
+ULExport void ulViewConfigSetUserAgent(ULViewConfig config, ULString agent_string);
+
+/******************************************************************************
  * View
  *****************************************************************************/
 
@@ -555,9 +575,8 @@ ULExport ULString ulSessionGetDiskPath(ULSession session);
 ///
 /// @note  You can pass null to 'session' to use the default session.
 ///
-ULExport ULView ulCreateView(ULRenderer renderer, unsigned int width,
-                             unsigned int height, bool transparent,
-                             ULSession session, bool force_cpu_renderer);
+ULExport ULView ulCreateView(ULRenderer renderer, unsigned int width, unsigned int height,
+                             ULViewConfig view_config, ULSession session);
 
 ///
 /// Destroy a View.

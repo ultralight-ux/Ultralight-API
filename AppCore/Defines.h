@@ -1,4 +1,8 @@
-// Copyright 2018 Ultralight, Inc. All rights reserved.
+/// This file is a part of Ultralight, a next-generation HTML renderer.
+///
+/// Website: <http://ultralig.ht>
+///
+/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 #pragma once
 
 // Needed for limit defines, like INTMAX_MAX, which is used by the std C++ library
@@ -25,17 +29,25 @@
 
 
 #if defined(__WIN32__) || defined(_WIN32)
-#  if defined(APPCORE_IMPLEMENTATION)
-#    define AExport __declspec(dllexport)
+#  if defined(ULTRALIGHT_STATIC_BUILD)
+#    define AExport 
 #  else
-#    define AExport __declspec(dllimport)
+#    if defined(APPCORE_IMPLEMENTATION)
+#      define AExport __declspec(dllexport)
+#    else
+#      define AExport __declspec(dllimport)
+#    endif
 #  endif
 #define _thread_local __declspec(thread)
 #ifndef _NATIVE_WCHAR_T_DEFINED
 #define DISABLE_NATIVE_WCHAR_T
 #endif
 #else
-#  define AExport __attribute__((visibility("default")))
+#  if defined(ULTRALIGHT_STATIC_BUILD)
+#    define AExport 
+#  else
+#    define AExport __attribute__((visibility("default")))
+#  endif
 #define _thread_local __thread
 #endif
 

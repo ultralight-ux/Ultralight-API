@@ -5,11 +5,11 @@
 ///
 /// @author
 ///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
+/// This file is a part of Ultralight, a next-generation HTML renderer.
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #ifndef APPCORE_CAPI_H
 #define APPCORE_CAPI_H
@@ -40,10 +40,11 @@ typedef struct C_Overlay* ULOverlay;
 /// Window creation flags. @see Window::Create
 ///
 typedef enum {
-  kWindowFlags_Borderless = 1 << 0,
-  kWindowFlags_Titled = 1 << 1,
-  kWindowFlags_Resizable = 1 << 2,
+  kWindowFlags_Borderless  = 1 << 0,
+  kWindowFlags_Titled      = 1 << 1,
+  kWindowFlags_Resizable   = 1 << 2,
   kWindowFlags_Maximizable = 1 << 3,
+  kWindowFlags_Hidden      = 1 << 4,
 } ULWindowFlags;
 
 ///
@@ -129,21 +130,6 @@ ACExport ULApp ulCreateApp(ULSettings settings, ULConfig config);
 ///
 ACExport void ulDestroyApp(ULApp app);
 
-///
-/// Set the main window, you must set this before calling ulAppRun.
-///
-/// @param  window  The window to use for all rendering.
-///
-/// @note  We currently only support one Window per App, this will change
-///        later once we add support for multiple driver instances.
-///
-ACExport void ulAppSetWindow(ULApp app, ULWindow window);
-
-///
-/// Get the main window.
-///
-ACExport ULWindow ulAppGetWindow(ULApp app);
-
 typedef void
 (*ULUpdateCallback) (void* user_data);
 
@@ -175,7 +161,7 @@ ACExport ULMonitor ulAppGetMainMonitor(ULApp app);
 ACExport ULRenderer ulAppGetRenderer(ULApp app);
 
 ///
-/// Run the main loop, make sure to call ulAppSetWindow before calling this.
+/// Run the main loop.
 ///
 ACExport void ulAppRun(ULApp app);
 
@@ -204,9 +190,9 @@ ACExport unsigned int ulMonitorGetHeight(ULMonitor monitor);
 ///
 /// @param  monitor       The monitor to create the Window on.
 ///
-/// @param  width         The width (in device coordinates).
+/// @param  width         The width (in screen coordinates).
 ///
-/// @param  height        The height (in device coordinates).
+/// @param  height        The height (in screen coordinates).
 ///
 /// @param  fullscreen    Whether or not the window is fullscreen.
 ///
@@ -222,7 +208,7 @@ ACExport ULWindow ulCreateWindow(ULMonitor monitor, unsigned int width,
 ACExport void ulDestroyWindow(ULWindow window);
 
 typedef void
-(*ULCloseCallback) (void* user_data);
+(*ULCloseCallback) (void* user_data, ULWindow window);
 
 ///
 /// Set a callback to be notified when a window closes.
@@ -232,7 +218,7 @@ ACExport void ulWindowSetCloseCallback(ULWindow window,
                                        void* user_data);
 
 typedef void
-(*ULResizeCallback) (void* user_data, unsigned int width, unsigned int height);
+(*ULResizeCallback) (void* user_data, ULWindow window, unsigned int width, unsigned int height);
 
 ///
 /// Set a callback to be notified when a window resizes
@@ -243,14 +229,47 @@ ACExport void ulWindowSetResizeCallback(ULWindow window,
                                         void* user_data);
 
 ///
+/// Get window width (in screen coordinates).
+///
+ACExport unsigned int ulWindowGetScreenWidth(ULWindow window);
+
+///
 /// Get window width (in pixels).
 ///
 ACExport unsigned int ulWindowGetWidth(ULWindow window);
 
 ///
+/// Get window height (in screen coordinates).
+///
+ACExport unsigned int ulWindowGetScreenHeight(ULWindow window);
+
+///
 /// Get window height (in pixels).
 ///
 ACExport unsigned int ulWindowGetHeight(ULWindow window);
+
+///
+/// Move the window to a new position (in screen coordinates) relative to the top-left of the
+/// monitor area.
+///
+ACExport void ulWindowMoveTo(ULWindow window, int x, int y);
+
+///
+/// Move the window to the center of the monitor.
+///
+ACExport void ulWindowMoveToCenter(ULWindow);
+
+///
+/// Get the x-position of the window (in screen coordinates) relative to the top-left of the
+/// monitor area.
+///
+ACExport int ulWindowGetPositionX(ULWindow window);
+
+///
+/// Get the y-position of the window (in screen coordinates) relative to the top-left of the
+/// monitor area.
+///
+ACExport int ulWindowGetPositionY(ULWindow window);
 
 ///
 /// Get whether or not a window is fullscreen.
@@ -273,19 +292,34 @@ ACExport void ulWindowSetTitle(ULWindow window, const char* title);
 ACExport void ulWindowSetCursor(ULWindow window, ULCursor cursor);
 
 ///
+/// Show the window (if it was previously hidden).
+///
+ACExport void ulWindowShow(ULWindow window);
+
+///
+/// Hide the window.
+///
+ACExport void ulWindowHide(ULWindow window);
+
+///
+/// Whether or not the window is currently visible (not hidden).
+///
+ACExport bool ulWindowIsVisible(ULWindow window);
+
+///
 /// Close a window.
 ///
 ACExport void ulWindowClose(ULWindow window);
 
 ///
-/// Convert device coordinates to pixels using the current DPI scale.
+/// Convert screen coordinates to pixels using the current DPI scale.
 ///
-ACExport int ulWindowDeviceToPixel(ULWindow window, int val);
+ACExport int ulWindowScreenToPixels(ULWindow window, int val);
 
 ///
-/// Convert pixels to device coordinates using the current DPI scale.
+/// Convert pixels to screen coordinates using the current DPI scale.
 ///
-ACExport int ulWindowPixelsToDevice(ULWindow window, int val);
+ACExport int ulWindowPixelsToScreen(ULWindow window, int val);
 
 ///
 /// Get the underlying native window handle.
@@ -299,12 +333,11 @@ ACExport void* ulWindowGetNativeHandle(ULWindow window);
 ///
 /// Create a new Overlay.
 ///
-/// @param  window  The window to create the Overlay in. (we currently only
-///                 support one window per application)
+/// @param  window  The window to create the Overlay in.
 ///
-/// @param  width   The width in device coordinates.
+/// @param  width   The width in pixels.
 ///
-/// @param  height  The height in device coordinates.
+/// @param  height  The height in pixels.
 ///
 /// @param  x       The x-position (offset from the left of the Window), in
 ///                 pixels.

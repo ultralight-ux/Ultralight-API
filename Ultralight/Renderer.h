@@ -89,7 +89,7 @@ public:
   /// 
   /// @param  height  The initial height, in pixels.
   ///
-  /// @param  transparent  Whether or not the view background is transparent.
+  /// @param  config  Configuration details for the View.
   ///
   /// @param  session  The session to store local data in. Pass a nullptr to
   ///                  use the default session.
@@ -99,8 +99,7 @@ public:
   ///          (nullable).
   ///
   virtual Ref<View> CreateView(uint32_t width, uint32_t height,
-	                             bool transparent, RefPtr<Session> session,
-                               bool force_cpu_renderer = false) = 0;
+    const ViewConfig& config, RefPtr<Session> session) = 0;
 
   ///
   /// Update timers and dispatch internal callbacks. You should call this often
@@ -117,6 +116,8 @@ public:
   /// @note  Views are only repainted if they actually need painting.
   ///
   virtual void Render() = 0;
+
+  virtual void RenderOnly(View** view_array, size_t view_array_len) = 0;
 
   ///
   /// Attempt to release as much memory as possible. Don't call this from any

@@ -5,11 +5,11 @@
 ///
 /// @author
 ///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
+/// This file is a part of Ultralight, a next-generation HTML renderer.
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2019 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include "Window.h"
@@ -28,8 +28,7 @@ public:
   ///
   /// Create a new Overlay.
   ///
-  /// @param  window  The window to create the Overlay in. (we currently only
-  ///                 support one window per application)
+  /// @param  window  The window to create the Overlay in.
   ///
   /// @param  width   The width in pixels.
   ///
@@ -47,8 +46,7 @@ public:
   ///
   /// Create a new Overlay, wrapping an existing View.
   ///
-  /// @param  window  The window to create the Overlay in. (we currently only
-  ///                 support one window per application)
+  /// @param  window  The window to create the Overlay in.
   ///
   /// @param  view    The View to wrap (will use its width and height).
   ///
@@ -134,7 +132,7 @@ public:
 
 protected:
   virtual ~Overlay();
-  virtual void Draw() = 0;
+  virtual void Paint() = 0;
   friend class OverlayManager;
 };
 
