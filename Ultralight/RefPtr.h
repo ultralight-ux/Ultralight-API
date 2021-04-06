@@ -40,7 +40,7 @@
 */
 
 #pragma once
-#include <Ultralight/Defines.h>
+#include "Defines.h"
 #include <assert.h>
 #include <utility>
 

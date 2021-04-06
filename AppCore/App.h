@@ -13,9 +13,9 @@
 ///
 #pragma once
 #include "Defines.h"
-#include <Ultralight/RefPtr.h>
-#include <Ultralight/Renderer.h>
-#include <Ultralight/platform/Config.h>
+#include "../Ultralight/RefPtr.h"
+#include "../Ultralight/Renderer.h"
+#include "../Ultralight/platform/Config.h"
 
 namespace ultralight {
 

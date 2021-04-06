@@ -12,7 +12,7 @@
 /// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
+#include "Defines.h"
 #include <memory.h>
 #include <cmath>
 #include <cstring>

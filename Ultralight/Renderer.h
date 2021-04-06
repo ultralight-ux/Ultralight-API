@@ -12,10 +12,10 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
-#include <Ultralight/RefPtr.h>
-#include <Ultralight/Session.h>
-#include <Ultralight/View.h>
+#include "Defines.h"
+#include "RefPtr.h"
+#include "Session.h"
+#include "View.h"
 
 namespace ultralight {
 

@@ -12,9 +12,9 @@
 /// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <Ultralight/Defines.h>
-#include <Ultralight/String16.h>
-#include <Ultralight/Buffer.h>
+#include "../Defines.h"
+#include "../String16.h"
+#include "../Buffer.h"
 
 namespace ultralight {
 

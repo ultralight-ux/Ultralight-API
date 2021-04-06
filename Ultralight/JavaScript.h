@@ -12,10 +12,10 @@
 /// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
-#include <JavaScriptCore/JavaScript.h>
-#include <Ultralight/Defines.h>
-#include <Ultralight/RefPtr.h>
-#include <Ultralight/String.h>
+#include "../JavaScriptCore/JavaScript.h"
+#include "Defines.h"
+#include "RefPtr.h"
+#include "String.h"
 
 namespace ultralight {
 

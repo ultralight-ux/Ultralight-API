@@ -19,7 +19,7 @@
 #endif
 
 #include <stddef.h>
-#include <JavaScriptCore/JavaScript.h>
+#include "../JavaScriptCore/JavaScript.h"
 #ifdef __OBJC__
 #import <AppKit/NSEvent.h>
 #endif
