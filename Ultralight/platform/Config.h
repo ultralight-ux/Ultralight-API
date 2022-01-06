@@ -13,50 +13,44 @@
 ///
 #pragma once
 #include <Ultralight/Defines.h>
-#include <Ultralight/String16.h>
+#include <Ultralight/String.h>
 
 namespace ultralight {
 
 ///
 /// The winding order for front-facing triangles. (Only used when the GPU renderer is used)
 ///
-/// @note  In most 3D engines, there is the concept that triangles have a "front" and a "back". All
-///        the front-facing triangles (eg, those that are facing the camera) are rendered, and all
-///        back-facing triangles are culled (ignored). The winding-order of the triangle's vertices
-///        is used to determine which side is front and back. You should tell Ultralight which
-///        winding-order your 3D engine uses.
-///
-enum FaceWinding {
+enum class UExport FaceWinding : uint8_t {
   ///
   /// Clockwise Winding (Direct3D, etc.)
   ///
-  kFaceWinding_Clockwise,
+  Clockwise,
 
   ///
   /// Counter-Clockwise Winding (OpenGL, etc.)
   ///
-  kFaceWinding_CounterClockwise,
+  CounterClockwise,
 };
 
-enum FontHinting {
+enum class UExport FontHinting : uint8_t {
   ///
   /// Lighter hinting algorithm-- glyphs are slightly fuzzier but better resemble their original
   /// shape. This is achieved by snapping glyphs to the pixel grid only vertically which better
   /// preserves inter-glyph spacing.
   ///
-  kFontHinting_Smooth,
+  Smooth,
 
   ///
   /// Default hinting algorithm-- offers a good balance between sharpness and shape at smaller font
   /// sizes.
   ///
-  kFontHinting_Normal,
+  Normal,
 
   ///
   /// Strongest hinting algorithm-- outputs only black/white glyphs. The result is usually
   /// unpleasant if the underlying TTF does not contain hints for this type of rendering.
   ///
-  kFontHinting_Monochrome,
+  Monochrome,
 };
 
 ///
@@ -67,32 +61,35 @@ enum FontHinting {
 ///
 struct UExport Config {
   ///
-  /// The file path to the directory that contains Ultralight's bundled resources (eg, cacert.pem
-  /// and other localized resources).
-  ///
-  String16 resource_path;
-
-  ///
   /// The file path to a writable directory that will be used to store cookies, cached resources,
   /// and other persistent data.
+  /// 
+  /// Files are only written to disk when using a persistent Session (see Renderer::CreateSession).
   ///
-  String16 cache_path;
+  String cache_path;
+
+  ///
+  /// The library loads bundled resources (eg, cacert.pem and other localized resources) from the
+  /// FileSystem API (eg, `file:///resources/cacert.pem`). You can customize the prefix to use when
+  /// loading resource URLs by modifying this setting.
+  ///
+  String resource_path_prefix = "resources/";
 
   ///
   /// The winding order for front-facing triangles. @see FaceWinding
   ///
   /// Note: This is only used when the GPU renderer is enabled.
   ///
-  FaceWinding face_winding = kFaceWinding_CounterClockwise;
+  FaceWinding face_winding = FaceWinding::CounterClockwise;
 
   ///
   /// The hinting algorithm to use when rendering fonts. @see FontHinting
   ///
-  FontHinting font_hinting = kFontHinting_Normal;
+  FontHinting font_hinting = FontHinting::Normal;
 
   ///
-  /// The gamma to use when compositing font glyphs, change this value to adjust contrast (Adobe and
-  /// Apple prefer 1.8, others may prefer 2.2).
+  /// The gamma to use when compositing font glyphs, change this value to adjust contrast (Adobe
+  /// and Apple prefer 1.8, others may prefer 2.2).
   ///
   double font_gamma = 1.8;
 
@@ -100,7 +97,7 @@ struct UExport Config {
   /// Default user stylesheet. You should set this to your own custom CSS string to define default
   /// styles for various DOM elements, scrollbars, and platform input widgets.
   ///
-  String16 user_stylesheet;
+  String user_stylesheet;
 
   ///
   /// Whether or not we should continuously repaint any Views or compositor layers, regardless if
@@ -137,9 +134,9 @@ struct UExport Config {
   ///
   /// Number of pages to keep in the cache. Defaults to 0 (none).
   ///
-  /// @note  Safari typically caches about 5 pages and maintains an on-disk cache to support typical
-  ///        web-browsing activities. If you increase this, you should probably increase the memory
-  ///        cache size as well.
+  /// @note  Safari typically caches about 5 pages and maintains an on-disk cache to support
+  ///        typical web-browsing activities. If you increase this, you should probably increase
+  ///        the memory cache size as well.
   ///
   uint32_t page_cache_size = 0;
 
@@ -163,6 +160,24 @@ struct UExport Config {
   /// heaps start with a smaller initial value.
   ///
   uint32_t min_small_heap_size = 1 * 1024 * 1024;
+
+  ///
+  /// The number of threads to use in the Renderer (for parallel painting on the CPU, etc.).
+  /// 
+  /// You can set this to a certain number to limit the number of threads to spawn.
+  /// 
+  /// @note  If this value is 0 (the default), the number of threads will be determined at runtime
+  ///        using the following formula:
+  /// 
+  ///        max(PhysicalProcessorCount() - 1, 1)
+  /// 
+  uint32_t num_renderer_threads = 0;
+
+  /// 
+  /// The max amount of time (in seconds) to allow Renderer::Update to run per call. The library
+  /// will attempt to throttle timers and/or reschedule work if this time budget is exceeded.
+  ///
+  double max_update_time = 1.0 / 100.0;
 };
 
 } // namespace ultralight

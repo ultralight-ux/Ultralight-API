@@ -5,11 +5,11 @@
 ///
 /// @author
 ///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
+/// This file is a part of Ultralight, a next-generation HTML renderer.
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -20,9 +20,9 @@
 namespace ultralight {
 
 ///
-/// @brief  UTF-16 String container with conversions for UTF-8 and UTF-32.
+/// @brief  UTF-8 String container with conversions for UTF-16 and UTF-32.
 ///
-/// @note   Internally, all strings are represented as UTF-16.
+/// @note   Internally, all strings are represented as String8 (UTF-8).
 ///
 class UExport String {
 public:
@@ -87,19 +87,19 @@ public:
   inline friend String operator+(String lhs, const String& rhs) { lhs += rhs; return lhs; }
 
   ///
-  /// Get native UTF-16 string
+  /// Get native UTF-8 string
   ///
-  String16& utf16() { return str_; }
+  String8& utf8() { return str_; }
 
   ///
-  /// Get native UTF-16 string
+  /// Get native UTF-8 string
   ///
-  const String16& utf16() const { return str_; }
+  const String8& utf8() const { return str_; }
 
   ///
-  /// Convert to UTF-8 string
+  /// Convert to UTF-16 string
   ///
-  String8 utf8() const;
+  String16 utf16() const;
 
   ///
   /// Convert to UTF-32 string
@@ -109,10 +109,10 @@ public:
   ///
   /// Check if string is empty or not
   ///
-  bool empty() const { return utf16().empty(); }
+  bool empty() const { return str_.empty(); }
 
 private:
-  String16 str_;
+  String8 str_;
 };
 
 

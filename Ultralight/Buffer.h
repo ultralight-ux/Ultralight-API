@@ -25,7 +25,7 @@ public:
   ///
   /// Create a Buffer, a copy of data is made.
   ///
-  static Ref<Buffer> Create(const void* data, size_t size);
+  static RefPtr<Buffer> Create(const void* data, size_t size);
 
   ///
   /// Get a pointer to raw byte data.

@@ -114,7 +114,7 @@ public:
   // The virtual key-code associated with this keyboard event. This is either
   // directly from the event (ie, WPARAM on Windows) or via a mapping function.
   // You can see a full list of the possible virtual key-codes in
-  // KeyboardCodes.h
+  // KeyCodes.h
   ///
   int virtual_key_code;
 
@@ -176,5 +176,21 @@ public:
 ///
 void UExport GetKeyIdentifierFromVirtualKeyCode(int virtual_key_code,
   String& key_identifier_result);
+
+///
+/// Utility function for generating a key string from a virtual key-code.
+///
+/// @param  virtual_key_code       The virtual key-code to generate the key
+///                                string from.
+/// 
+/// @param  shift   Whether or not the shift key is currently pressed.
+///
+/// @param  key_result  The string to store the result in.
+/// 
+/// @note   This function assumes US keyboard layout.
+/// 
+/// @see <https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values>
+///
+void UExport GetKeyFromVirtualKeyCode(int virtual_key_code, bool shift, String& key_result);
 
 }  // namespace ultralight

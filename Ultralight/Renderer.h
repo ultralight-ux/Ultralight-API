@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -57,7 +57,7 @@ public:
   ///          to a new instance, you should store it in a RefPtr<> to keep
   ///          the instance alive.
   ///
-  static Ref<Renderer> Create();
+  static RefPtr<Renderer> Create();
 
   ///
   /// Create a Session to store local data in (such as cookies, local storage,
@@ -74,13 +74,13 @@ public:
   /// @param  name  A unique name for this session, this will be used to
   ///               generate a unique disk path for persistent sessions.
   ///
-  virtual Ref<Session> CreateSession(bool is_persistent, const String& name) = 0;
+  virtual RefPtr<Session> CreateSession(bool is_persistent, const String& name) = 0;
   
   ///
   /// Get the default Session. This session is persistent (backed to disk) and
   /// has the name "default".
   ///
-  virtual Ref<Session> default_session() = 0;
+  virtual RefPtr<Session> default_session() = 0;
 
   ///
   /// Create a new View.
@@ -98,7 +98,7 @@ public:
   ///          it to either a Ref<View> (non-nullable) or RefPtr<View>
   ///          (nullable).
   ///
-  virtual Ref<View> CreateView(uint32_t width, uint32_t height,
+  virtual RefPtr<View> CreateView(uint32_t width, uint32_t height,
     const ViewConfig& config, RefPtr<Session> session) = 0;
 
   ///

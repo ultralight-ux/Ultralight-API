@@ -23,10 +23,9 @@ namespace ultralight {
 ///
 /// @brief  Rendering details for a View, to be used with your own GPUDriver
 ///
-/// When using your own GPUDriver, each View is rendered to an offscreen
-/// texture that you can display on a 3D quad in your application. This struct
-/// provides all the details you need to display the corresponding texture in
-/// your application.
+/// When using your own GPUDriver, each View is rendered to an offscreen texture that you can
+/// display on a 3D quad in your application. This struct provides all the details you need to
+/// display the corresponding texture in your application.
 ///
 struct UExport RenderTarget {
   ///
@@ -45,8 +44,8 @@ struct UExport RenderTarget {
   uint32_t height;
 
   ///
-  /// The GPUDriver-specific texture ID (you should bind the texture using
-  /// your implementation of GPUDriver::BindTexture before drawing a quad).
+  /// The GPUDriver-specific texture ID (you should bind the texture using your implementation of
+  /// GPUDriver::BindTexture before drawing a quad).
   ///
   uint32_t texture_id;
 
@@ -66,8 +65,7 @@ struct UExport RenderTarget {
   BitmapFormat texture_format;
 
   ///
-  /// UV coordinates of the texture (this is needed because the texture may
-  /// be padded).
+  /// UV coordinates of the texture (this is needed because the texture may be padded).
   ///
   Rect uv_coords;
 
@@ -81,4 +79,4 @@ struct UExport RenderTarget {
 
 #pragma pack(pop)
 
-}  // namespace ultralight
+} // namespace ultralight

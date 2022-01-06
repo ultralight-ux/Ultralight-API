@@ -55,6 +55,9 @@ namespace KeyCodes {
   // GK_HANGUL (15) IME Hangul mode
   const int GK_HANGUL = 0x15;
 
+  // GK_IME_ON (16) IME On
+  const int GK_IME_ON = 0x16;
+
   // GK_JUNJA (17) IME Junja mode
   const int GK_JUNJA = 0x17;
 
@@ -66,6 +69,9 @@ namespace KeyCodes {
 
   // GK_KANJI (19) IME Kanji mode
   const int GK_KANJI = 0x19;
+
+  // GK_IME_OFF (1A) IME Off
+  const int GK_IME_OFF = 0x1A;
 
   // GK_ESCAPE (1B) ESC key
   const int GK_ESCAPE = 0x1B;
@@ -448,37 +454,37 @@ namespace KeyCodes {
   // GK_LAUNCH_APP2 (B7) Windows 2000/XP: Start Application 2 key
   const int GK_MEDIA_LAUNCH_APP2 = 0xB7;
 
-  // GK_OEM_1 (BA) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ';:' key
+  // GK_OEM_1 (BA) ';:' for US
   const int GK_OEM_1 = 0xBA;
 
-  // GK_OEM_PLUS (BB) Windows 2000/XP: For any country/region, the '+' key
+  // GK_OEM_PLUS (BB) '=+' any country
   const int GK_OEM_PLUS = 0xBB;
 
-  // GK_OEM_COMMA (BC) Windows 2000/XP: For any country/region, the ',' key
+  // GK_OEM_COMMA (BC) ',<' any country
   const int GK_OEM_COMMA = 0xBC;
 
-  // GK_OEM_MINUS (BD) Windows 2000/XP: For any country/region, the '-' key
+  // GK_OEM_MINUS (BD) '-_' any country
   const int GK_OEM_MINUS = 0xBD;
 
-  // GK_OEM_PERIOD (BE) Windows 2000/XP: For any country/region, the '.' key
+  // GK_OEM_PERIOD (BE) '.>' any country
   const int GK_OEM_PERIOD = 0xBE;
 
-  // GK_OEM_2 (BF) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '/?' key
+  // GK_OEM_2 (BF) '/?' for US
   const int GK_OEM_2 = 0xBF;
 
-  // GK_OEM_3 (C0) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '`~' key
+  // GK_OEM_3 (C0) '`~' for US
   const int GK_OEM_3 = 0xC0;
 
-  // GK_OEM_4 (DB) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '[{' key
+  // GK_OEM_4 (DB) '[{' for US
   const int GK_OEM_4 = 0xDB;
 
-  // GK_OEM_5 (DC) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the '\|' key
+  // GK_OEM_5 (DC) '\|' for US
   const int GK_OEM_5 = 0xDC;
 
-  // GK_OEM_6 (DD) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the ']}' key
+  // GK_OEM_6 (DD) ']}' for US
   const int GK_OEM_6 = 0xDD;
 
-  // GK_OEM_7 (DE) Used for miscellaneous characters; it can vary by keyboard. Windows 2000/XP: For the US standard keyboard, the 'single-quote/double-quote' key
+  // GK_OEM_7 (DE) ''"' for US
   const int GK_OEM_7 = 0xDE;
 
   // GK_OEM_8 (DF) Used for miscellaneous characters; it can vary by keyboard.
@@ -492,6 +498,8 @@ namespace KeyCodes {
 
   // GK_PACKET (E7) Windows 2000/XP: Used to pass Unicode characters as if they were keystrokes. The GK_PACKET key is the low word of a 32-bit Virtual Key value used for non-keyboard input methods. For more information, see Remark in KEYBDINPUT,SendInput, WM_KEYDOWN, and WM_KEYUP
   const int GK_PACKET = 0xE7;
+
+  const int GK_OEM_ATTN = 0xF0;
 
   // GK_ATTN (F6) Attn key
   const int GK_ATTN = 0xF6;

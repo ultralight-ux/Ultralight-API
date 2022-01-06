@@ -56,29 +56,29 @@ struct UExport ViewConfig {
   ///
   /// Default font-family to use.
   ///
-  String16 font_family_standard = "Times New Roman";
+  String font_family_standard = "Times New Roman";
 
   ///
   /// Default font-family to use for fixed fonts. (pre/code)
   ///
-  String16 font_family_fixed = "Courier New";
+  String font_family_fixed = "Courier New";
 
   ///
   /// Default font-family to use for serif fonts.
   ///
-  String16 font_family_serif = "Times New Roman";
+  String font_family_serif = "Times New Roman";
 
   ///
   /// Default font-family to use for sans-serif fonts.
   ///
-  String16 font_family_sans_serif = "Arial";
+  String font_family_sans_serif = "Arial";
 
   ///
   /// Default user-agent string.
   ///
-  String16 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                          "AppleWebKit/608.3.10 (KHTML, like Gecko) "
-                          "Ultralight/1.3.0 Safari/608.3.10";
+  String user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/608.3.10 (KHTML, like Gecko) "
+                         "Ultralight/1.3.0 Safari/608.3.10";
 };
 
 ///
@@ -208,7 +208,7 @@ public:
   ///        It will be unlocked when the returned JSContext's ref-count goes
   ///        to zero. The lock is recursive, you can call this multiple times.
   ///
-  virtual Ref<JSContext> LockJSContext() = 0;
+  virtual RefPtr<JSContext> LockJSContext() = 0;
 
   ///
   /// Helper function to evaluate a raw string of JavaScript and return the

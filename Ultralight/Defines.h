@@ -88,8 +88,7 @@ UExport uint32_t UltralightVersionPatch();
 ///
 /// Ultralight is a next-generation HTML renderer for desktop apps and games.
 ///
-/// If this is your first time exploring the API, we recommend
-/// starting with ultralight::Renderer and ultralight::View.
+/// If this is your first time exploring the API, we recommend starting with Renderer.h and View.h.
 ///
 ///
 /// @section usefullinks_sec Useful Links

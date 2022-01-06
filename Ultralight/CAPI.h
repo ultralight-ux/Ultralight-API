@@ -24,23 +24,31 @@
 #import <AppKit/NSEvent.h>
 #endif
 
-#if defined(__WIN32__) || defined(_WIN32)
-#  if defined(ULTRALIGHT_IMPLEMENTATION)
-#    define ULExport __declspec(dllexport)
+#if defined(ULTRALIGHT_STATIC_BUILD)
+#  define ULExport 
+#else
+#  if defined(__WIN32__) || defined(_WIN32)
+#    if defined(ULTRALIGHT_IMPLEMENTATION)
+#      define ULExport __declspec(dllexport)
+#    else
+#      define ULExport __declspec(dllimport)
+#    endif
 #  else
-#    define ULExport __declspec(dllimport)
+#    define ULExport __attribute__((visibility("default")))
 #  endif
-#define _thread_local __declspec(thread)
-#ifndef _NATIVE_WCHAR_T_DEFINED
-#define DISABLE_NATIVE_WCHAR_T
-typedef unsigned short ULChar16;
-#else
-typedef wchar_t ULChar16;
 #endif
+
+#if defined(__WIN32__) || defined(_WIN32)
+#  define _thread_local __declspec(thread)
+#  ifndef _NATIVE_WCHAR_T_DEFINED
+#    define DISABLE_NATIVE_WCHAR_T
+     typedef unsigned short ULChar16;
+#  else
+     typedef wchar_t ULChar16;
+#  endif
 #else
-#  define ULExport __attribute__((visibility("default")))
-#define _thread_local __thread
-typedef unsigned short ULChar16;
+#  define _thread_local __thread
+   typedef unsigned short ULChar16;
 #endif
 
 #ifdef __cplusplus
@@ -296,12 +304,6 @@ ULExport ULConfig ulCreateConfig();
 /// Destroy config.
 ///
 ULExport void ulDestroyConfig(ULConfig config);
-
-///
-/// Set the file path to the directory that contains Ultralight's bundled
-/// resources (eg, cacert.pem and other localized resources). 
-///
-ULExport void ulConfigSetResourcePath(ULConfig config, ULString resource_path);
 
 ///
 /// Set the file path to a writable directory that will be used to store

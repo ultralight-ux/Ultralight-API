@@ -13,23 +13,23 @@
 ///
 #pragma once
 #include <Ultralight/Defines.h>
-#include <Ultralight/String16.h>
+#include <Ultralight/String.h>
 
 namespace ultralight {
 
 ///
 /// @brief  Clipboard interface.
-///          
+///
 /// This is used for reading and writing data to the platform Clipboard.
 ///
-/// AppCore automatically provides a platform-specific implementation of this
-/// that cuts/copies/pastes to the OS clipboard when you call App::Create().
+/// AppCore automatically provides a platform-specific implementation of this that cuts, copies,
+/// and pastes to the OS clipboard when you call App::Create().
 ///
-/// If you are using Renderer::Create() instead, you will need to provide your
-/// own implementation of this. @see Platform::set_clipboard().
+/// If you are using Renderer::Create() instead of App::Create(), you will need to provide your own
+/// implementation of this. @see Platform::set_clipboard().
 ///
 class UExport Clipboard {
-public:
+ public:
   virtual ~Clipboard();
 
   ///
@@ -40,12 +40,12 @@ public:
   ///
   /// Read plain text from the clipboard
   ///
-  virtual String16 ReadPlainText() = 0;
+  virtual String ReadPlainText() = 0;
 
   ///
   /// Write plain text to the clipboard.
   ///
-  virtual void WritePlainText(const String16& text) = 0;
+  virtual void WritePlainText(const String& text) = 0;
 };
 
-}  // namespace ultralight
+} // namespace ultralight

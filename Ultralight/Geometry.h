@@ -24,12 +24,9 @@ namespace ultralight {
 /// 2D Vector Helper
 ///
 struct UExport vec2 {
-  union {
-    float value[2];
-    struct { float x, y; };
-  };
+  float x, y;
 
-  inline vec2() {}
+  inline vec2() : x(0.0f), y(0.0f) { }
 
   inline vec2(float x, float y) : x(x), y(y) {}
 
@@ -58,50 +55,50 @@ struct UExport vec2 {
   inline friend vec2 operator/(vec2 lhs, float rhs) { lhs /= rhs; return lhs; }
 
   inline vec2& operator+=(const vec2& rhs) {
-    value[0] += rhs.value[0];
-    value[1] += rhs.value[1];
+    x += rhs.x;
+    y += rhs.y;
     return *this;
   }
 
   inline vec2& operator-=(const vec2& rhs) {
-    value[0] -= rhs.value[0];
-    value[1] -= rhs.value[1];
+    x -= rhs.x;
+    y -= rhs.y;
     return *this;
   }
 
   inline vec2& operator*=(const vec2& rhs) {
-    value[0] *= rhs.value[0];
-    value[1] *= rhs.value[1];
+    x *= rhs.x;
+    y *= rhs.y;
     return *this;
   }
 
   inline vec2& operator/=(const vec2& rhs) {
-    value[0] /= rhs.value[0];
-    value[1] /= rhs.value[1];
+    x /= rhs.x;
+    y /= rhs.y;
     return *this;
   }
 
   inline vec2& operator+=(float rhs) {
-    value[0] += rhs;
-    value[1] += rhs;
+    x += rhs;
+    y += rhs;
     return *this;
   }
 
   inline vec2& operator-=(float rhs) {
-    value[0] -= rhs;
-    value[1] -= rhs;
+    x -= rhs;
+    y -= rhs;
     return *this;
   }
 
   inline vec2& operator*=(float rhs) {
-    value[0] *= rhs;
-    value[1] *= rhs;
+    x *= rhs;
+    y *= rhs;
     return *this;
   }
 
   inline vec2& operator/=(float rhs) {
-    value[0] /= rhs;
-    value[1] /= rhs;
+    x /= rhs;
+    y /= rhs;
     return *this;
   }
 
@@ -162,12 +159,9 @@ struct UExport vec2 {
 /// 3D Vector Helper
 ///
 struct UExport vec3 {
-  union {
-    float value[3];
-    struct { float x, y, z; };
-  };
+  float x, y, z;
 
-  inline vec3() {}
+  inline vec3() : x(0.0f), y(0.0f), z(0.0f) { }
 
   inline vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
@@ -190,58 +184,58 @@ struct UExport vec3 {
   inline friend vec3 operator/(vec3 lhs, float rhs) { lhs /= rhs; return lhs; }
 
   inline vec3& operator+=(const vec3& rhs) {
-    value[0] += rhs.value[0];
-    value[1] += rhs.value[1];
-    value[2] += rhs.value[2];
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
     return *this;
   }
 
   inline vec3& operator-=(const vec3& rhs) {
-    value[0] -= rhs.value[0];
-    value[1] -= rhs.value[1];
-    value[2] -= rhs.value[2];
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
     return *this;
   }
 
   inline vec3& operator*=(const vec3& rhs) {
-    value[0] *= rhs.value[0];
-    value[1] *= rhs.value[1];
-    value[2] *= rhs.value[2];
+    x *= rhs.x;
+    y *= rhs.y;
+    z *= rhs.z;
     return *this;
   }
 
   inline vec3& operator/=(const vec3& rhs) {
-    value[0] /= rhs.value[0];
-    value[1] /= rhs.value[1];
-    value[2] /= rhs.value[2];
+    x /= rhs.x;
+    y /= rhs.y;
+    z /= rhs.z;
     return *this;
   }
 
   inline vec3& operator+=(float rhs) {
-    value[0] += rhs;
-    value[1] += rhs;
-    value[2] += rhs;
+    x += rhs;
+    y += rhs;
+    z += rhs;
     return *this;
   }
 
   inline vec3& operator-=(float rhs) {
-    value[0] -= rhs;
-    value[1] -= rhs;
-    value[2] -= rhs;
+    x -= rhs;
+    y -= rhs;
+    z -= rhs;
     return *this;
   }
 
   inline vec3& operator*=(float rhs) {
-    value[0] *= rhs;
-    value[1] *= rhs;
-    value[2] *= rhs;
+    x *= rhs;
+    y *= rhs;
+    z *= rhs;
     return *this;
   }
 
   inline vec3& operator/=(float rhs) {
-    value[0] /= rhs;
-    value[1] /= rhs;
-    value[2] /= rhs;
+    x /= rhs;
+    y /= rhs;
+    z /= rhs;
     return *this;
   }
 
@@ -293,18 +287,15 @@ struct UExport vec3 {
 /// 4D Vector Helper
 ///
 struct UExport vec4 {
-  union {
-    float value[4];
-    struct { float x, y, z, w; };
-  };
+  float x, y, z, w;
 
-  inline vec4() {}
+  inline vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) { }
 
   inline vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 
   inline vec4(float x) : x(x), y(x), z(x), w(x) {}
 
-  inline vec4(const float x[4]) { memcpy(value, x, sizeof(value)); }
+  inline vec4(const float val[4]) : x(val[0]), y(val[1]), z(val[2]), w(val[3]) { }
 
   inline friend bool operator==(const vec4& a, const vec4& b) {
     return !memcmp(&a, &b, sizeof(a));
@@ -331,66 +322,66 @@ struct UExport vec4 {
   inline friend vec4 operator/(vec4 lhs, float rhs) { lhs /= rhs; return lhs; }
 
   inline vec4& operator+=(const vec4& rhs) {
-    value[0] += rhs.value[0];
-    value[1] += rhs.value[1];
-    value[2] += rhs.value[2];
-    value[3] += rhs.value[3];
+    x += rhs.x;
+    y += rhs.y;
+    z += rhs.z;
+    w += rhs.w;
     return *this;
   }
 
   inline vec4& operator-=(const vec4& rhs) {
-    value[0] -= rhs.value[0];
-    value[1] -= rhs.value[1];
-    value[2] -= rhs.value[2];
-    value[3] -= rhs.value[3];
+    x -= rhs.x;
+    y -= rhs.y;
+    z -= rhs.z;
+    w -= rhs.w;
     return *this;
   }
 
   inline vec4& operator*=(const vec4& rhs) {
-    value[0] *= rhs.value[0];
-    value[1] *= rhs.value[1];
-    value[2] *= rhs.value[2];
-    value[3] *= rhs.value[3];
+    x *= rhs.x;
+    y *= rhs.y;
+    z *= rhs.z;
+    w *= rhs.w;
     return *this;
   }
 
   inline vec4& operator/=(const vec4& rhs) {
-    value[0] /= rhs.value[0];
-    value[1] /= rhs.value[1];
-    value[2] /= rhs.value[2];
-    value[3] /= rhs.value[3];
+    x /= rhs.x;
+    y /= rhs.y;
+    z /= rhs.z;
+    w /= rhs.w;
     return *this;
   }
 
   inline vec4& operator+=(float rhs) {
-    value[0] += rhs;
-    value[1] += rhs;
-    value[2] += rhs;
-    value[3] += rhs;
+    x += rhs;
+    y += rhs;
+    z += rhs;
+    w += rhs;
     return *this;
   }
 
   inline vec4& operator-=(float rhs) {
-    value[0] -= rhs;
-    value[1] -= rhs;
-    value[2] -= rhs;
-    value[3] -= rhs;
+    x -= rhs;
+    y -= rhs;
+    z -= rhs;
+    w -= rhs;
     return *this;
   }
 
   inline vec4& operator*=(float rhs) {
-    value[0] *= rhs;
-    value[1] *= rhs;
-    value[2] *= rhs;
-    value[3] *= rhs;
+    x *= rhs;
+    y *= rhs;
+    z *= rhs;
+    w *= rhs;
     return *this;
   }
 
   inline vec4& operator/=(float rhs) {
-    value[0] /= rhs;
-    value[1] /= rhs;
-    value[2] /= rhs;
-    value[3] /= rhs;
+    x /= rhs;
+    y /= rhs;
+    z /= rhs;
+    w /= rhs;
     return *this;
   }
 
@@ -407,6 +398,20 @@ struct UExport vec4 {
             (a.z < b.z) ? b.z : a.z,
             (a.w < b.w) ? b.w : a.w };
   }
+
+  constexpr void load(const float* val) {
+    x = val[0];
+    y = val[1];
+    z = val[2];
+    w = val[3];
+  }
+
+  constexpr void store(float* val) const {
+    val[0] = x;
+    val[1] = y;
+    val[2] = z;
+    val[3] = w;
+  }
 };
 
 ///
@@ -418,16 +423,9 @@ typedef vec2 Point;
 /// Float Rectangle Helper
 ///
 struct UExport Rect {
-  union {
-    float value[4];
-    struct { float left, top, right, bottom; };
-  };
+  float left, top, right, bottom;
 
-  static inline Rect MakeEmpty() {
-    Rect result;
-    result.SetEmpty();
-    return result;
-  }
+  static constexpr Rect MakeEmpty() { return Rect{ 0.0f, 0.0f, 0.0f, 0.0f }; }
 
   inline float width() const { return right - left; }
   inline float height() const { return bottom - top; }
@@ -438,9 +436,7 @@ struct UExport Rect {
 
   inline Point origin() const { return { left, top }; }
 
-  inline void SetEmpty() {
-    memset(this, 0, sizeof(*this));
-  }
+  inline void SetEmpty() { *this = MakeEmpty(); }
 
   inline bool IsEmpty() const {
     return *this == MakeEmpty();
@@ -451,10 +447,10 @@ struct UExport Rect {
   }
 
   inline void Inset(float dx, float dy) {
-    value[0] += dx;
-    value[1] += dy;
-    value[2] -= dx;
-    value[3] -= dy;
+    left += dx;
+    top += dy;
+    right -= dx;
+    bottom -= dy;
   }
 
   inline void Outset(float dx, float dy) {
@@ -462,10 +458,10 @@ struct UExport Rect {
   }
 
   inline void Move(float dx, float dy) {
-    value[0] += dx;
-    value[1] += dy;
-    value[2] += dx;
-    value[3] += dy;
+    left += dx;
+    top += dy;
+    right += dx;
+    bottom += dy;
   }
 
   inline float area() const {
@@ -478,10 +474,10 @@ struct UExport Rect {
       *this = rhs;
     }
     else {
-      if (rhs.value[0] < value[0]) value[0] = rhs.value[0];
-      if (rhs.value[1] < value[1]) value[1] = rhs.value[1];
-      if (rhs.value[2] > value[2]) value[2] = rhs.value[2];
-      if (rhs.value[3] > value[3]) value[3] = rhs.value[3];
+      if (rhs.left < left) left = rhs.left;
+      if (rhs.top < top) top = rhs.top;
+      if (rhs.right > right) right = rhs.right;
+      if (rhs.bottom > bottom) bottom = rhs.bottom;
     }
   }
 
@@ -491,10 +487,10 @@ struct UExport Rect {
       *this = { p.x, p.y, p.x, p.y };
     }
     else {
-      if (p.x < value[0]) value[0] = p.x;
-      if (p.y < value[1]) value[1] = p.y;
-      if (p.x > value[2]) value[2] = p.x;
-      if (p.y > value[3]) value[3] = p.y;
+      if (p.x < left) left = p.x;
+      if (p.y < top) top = p.y;
+      if (p.x > right) right = p.x;
+      if (p.y > bottom) bottom = p.y;
     }
   }
 
@@ -529,22 +525,17 @@ struct UExport Rect {
   friend inline bool operator!=(const Rect& a, const Rect& b) {
     return !(a == b);
   }
+
+  inline vec4 ToVec4() { return vec4 { left, top, right, bottom }; }
 };
 
 ///
 /// Integer Rectangle Helper
 ///
 struct UExport IntRect {
-  union {
-    int value[4];
-    struct { int left, top, right, bottom; };
-  };
+  int left, top, right, bottom;
 
-  static inline IntRect MakeEmpty() {
-    IntRect result;
-    result.SetEmpty();
-    return result;
-  }
+  static constexpr IntRect MakeEmpty() { return IntRect{ 0, 0, 0, 0 }; }
 
   inline int width() const { return right - left; }
   inline int height() const { return bottom - top; }
@@ -553,11 +544,9 @@ struct UExport IntRect {
   inline int center_x() const { return (int)std::round((left + right) * 0.5f); }
   inline int center_y() const { return (int)std::round((top + bottom) * 0.5f); }
 
-  inline Point origin() const { return{ (float)left, (float)top }; }
+  inline Point origin() const { return Point{ (float)left, (float)top }; }
 
-  inline void SetEmpty() {
-    memset(this, 0, sizeof(*this));
-  }
+  inline void SetEmpty() { *this = MakeEmpty(); }
 
   inline bool IsEmpty() const {
     return *this == MakeEmpty();
@@ -568,10 +557,10 @@ struct UExport IntRect {
   }
 
   inline void Inset(int dx, int dy) {
-    value[0] += dx;
-    value[1] += dy;
-    value[2] -= dx;
-    value[3] -= dy;
+    left += dx;
+    top += dy;
+    right -= dx;
+    bottom -= dy;
   }
 
   inline void Outset(int dx, int dy) {
@@ -579,10 +568,10 @@ struct UExport IntRect {
   }
 
   inline void Move(int dx, int dy) {
-    value[0] += dx;
-    value[1] += dy;
-    value[2] += dx;
-    value[3] += dy;
+    left += dx;
+    top += dy;
+    right += dx;
+    bottom += dy;
   }
 
   inline int area() const {
@@ -595,10 +584,10 @@ struct UExport IntRect {
       *this = rhs;
     }
     else {
-      if (rhs.value[0] < value[0]) value[0] = rhs.value[0];
-      if (rhs.value[1] < value[1]) value[1] = rhs.value[1];
-      if (rhs.value[2] > value[2]) value[2] = rhs.value[2];
-      if (rhs.value[3] > value[3]) value[3] = rhs.value[3];
+      if (rhs.left < left) left = rhs.left;
+      if (rhs.top < top) top = rhs.top;
+      if (rhs.right > right) right = rhs.right;
+      if (rhs.bottom > bottom) bottom = rhs.bottom;
     }
   }
 
@@ -608,10 +597,10 @@ struct UExport IntRect {
       *this = { (int)std::floor(p.x), (int)std::floor(p.y), (int)std::ceil(p.x), (int)std::ceil(p.y) };
     }
     else {
-      if ((int)std::floor(p.x) < value[0]) value[0] = (int)std::floor(p.x);
-      if ((int)std::floor(p.y) < value[1]) value[1] = (int)std::floor(p.y);
-      if ((int)std::ceil(p.x) > value[2]) value[2] = (int)std::ceil(p.x);
-      if ((int)std::ceil(p.y) > value[3]) value[3] = (int)std::ceil(p.y);
+      if ((int)std::floor(p.x) < left) left = (int)std::floor(p.x);
+      if ((int)std::floor(p.y) < top) top = (int)std::floor(p.y);
+      if ((int)std::ceil(p.x) > right) right = (int)std::ceil(p.x);
+      if ((int)std::ceil(p.y) > bottom) bottom = (int)std::ceil(p.y);
     }
   }
 
