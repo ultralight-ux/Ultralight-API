@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -36,16 +36,8 @@ struct UExport Matrix4x4 {
 ///
 /// Transformation Matrix helper
 ///
-struct UExport Matrix {
-#if defined(__x86_64__) || defined(_M_X64)
-#if defined(_MSC_VER)
-  __declspec(align(16)) typedef double Aligned4x4[4][4];
-#else
-  typedef double Aligned4x4[4][4] __attribute__((aligned(16)));
-#endif
-#else
+struct UExport alignas(16) Matrix {
   typedef double Aligned4x4[4][4];
-#endif
 
   Aligned4x4 data;
 

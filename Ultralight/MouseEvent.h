@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -27,19 +27,19 @@ public:
   /// The various MouseEvent types.
   ///
   enum Type {
-	  ///
+	///
     /// Mouse moved type
-	  ///
+	///
     kType_MouseMoved,
 
-	  ///
+	///
     /// Mouse button pressed type
-	  ///
+	///
     kType_MouseDown,
 
-	  ///
+	///
     /// Mouse button released type
-	  ///
+	///
     kType_MouseUp,
   };
 

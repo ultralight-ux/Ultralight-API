@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -19,13 +19,13 @@
 namespace ultralight {
 
 ///
-/// @brief A Session stores local data such as cookies, local storage,
-///        and application cache for one or more Views. 
+/// @brief  A Session stores local data such as cookies, local storage, and application cache for
+///         one or more Views.
 ///
-/// @see   Renderer::CreateSession
+/// @see  Renderer::CreateSession
 ///
 class UExport Session : public RefCounted {
-public:
+ public:
   ///
   /// Whether or not this session is written to disk.
   ///
@@ -46,8 +46,8 @@ public:
   ///
   virtual String disk_path() const = 0;
 
-protected:
+ protected:
   virtual ~Session();
 };
 
-}  // namespace ultralight
+} // namespace ultralight

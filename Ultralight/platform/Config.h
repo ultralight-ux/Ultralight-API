@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -51,6 +51,11 @@ enum class UExport FontHinting : uint8_t {
   /// unpleasant if the underlying TTF does not contain hints for this type of rendering.
   ///
   Monochrome,
+
+  ///
+  /// No hinting is performed-- fonts may be blurry at smaller font sizes.
+  ///
+  None,
 };
 
 ///
@@ -174,10 +179,28 @@ struct UExport Config {
   uint32_t num_renderer_threads = 0;
 
   /// 
-  /// The max amount of time (in seconds) to allow Renderer::Update to run per call. The library
-  /// will attempt to throttle timers and/or reschedule work if this time budget is exceeded.
+  /// The max amount of time (in seconds) to allow repeating timers to run during each call to
+  /// Renderer::Update. The library will attempt to throttle timers and/or reschedule work if this
+  /// time budget is exceeded.
   ///
-  double max_update_time = 1.0 / 100.0;
+  double max_update_time = 1.0 / 200.0;
+
+  ///
+  /// The alignment (in bytes) of the BitmapSurface when using the CPU renderer.
+  ///
+  /// The underlying bitmap associated with each BitmapSurface will have row_bytes padded to reach
+  /// this alignment.
+  ///
+  /// Aligning the bitmap helps improve performance when using the CPU renderer. Determining the
+  /// proper value to use depends on the CPU architecture and max SIMD instruction set used.
+  ///
+  /// We generally target the 128-bit SSE2 instruction set across most PC platforms so '16' is
+  /// a safe value to use.
+  ///
+  /// You can set this to '0' to perform no padding (row_bytes will always be width * 4) at a
+  /// slight cost to performance.
+  ///
+  uint32_t bitmap_alignment = 16;
 };
 
 } // namespace ultralight

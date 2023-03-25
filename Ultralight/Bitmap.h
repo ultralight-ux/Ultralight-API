@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -17,8 +17,6 @@
 #include <Ultralight/Geometry.h>
 
 namespace ultralight {
-
-#pragma pack(push, 1)
 
 ///
 /// The various Bitmap formats.
@@ -49,6 +47,12 @@ enum class UExport BitmapFormat : uint8_t {
 #define GetBytesPerPixel(x) (x == BitmapFormat::A8_UNORM ? 1 : 4)
 
 ///
+/// Forward declaration for the LockedPixels class.
+/// 
+template<typename T>
+class LockedPixels;
+
+///
 /// @brief  Bitmap container with basic blitting and conversion routines.
 ///
 class UExport Bitmap : public RefCounted {
@@ -70,6 +74,25 @@ class UExport Bitmap : public RefCounted {
   /// @return  A ref-pointer to a new Bitmap instance.
   ///
   static RefPtr<Bitmap> Create(uint32_t width, uint32_t height, BitmapFormat format);
+
+  ///
+  /// Create an aligned Bitmap with a certain configuration. Pixels will be allocated but not
+  /// initialized. Row bytes will be padded to reach the specified alignment.
+  ///
+  /// @param  width   The width in pixels.
+  ///
+  /// @param  height  The height in pixels.
+  ///
+  /// @param  format  The pixel format to use.
+  ///
+  /// @param  alignment  The alignment (in bytes) to use. Row bytes will be padded to reach a
+  ///                    multiple of this value and the underlying storage will be allocated with
+  ///                    this alignment.
+  ///
+  /// @return  A ref-pointer to a new Bitmap instance.
+  ///
+  static RefPtr<Bitmap> Create(uint32_t width, uint32_t height, BitmapFormat format,
+                               uint32_t alignment);
 
   ///
   /// Create a Bitmap with existing pixels and configuration.
@@ -149,6 +172,14 @@ class UExport Bitmap : public RefCounted {
   virtual bool owns_pixels() const = 0;
 
   ///
+  /// Lock the pixel buffer for reading/writing (safe version, automatically unlocks).
+  ///
+  /// @return  A managed container that can be used to access the pixels (LockedPixels::data()).
+  ///          This container will automatically unlock the pixels when it goes out of scope.
+  ///
+  virtual LockedPixels<RefPtr<Bitmap>> LockPixelsSafe() const = 0;
+
+  ///
   /// Lock the pixel buffer for reading/writing.
   ///
   /// @return  A pointer to the pixel buffer.
@@ -213,7 +244,7 @@ class UExport Bitmap : public RefCounted {
   ///                     edge pixels from the source bitmap.
   ///
   /// @return  Whether or not the operation succeeded (this can fail if the src_rect and/or
-  ///          dest_rect are invalid, or if their total dimensions do not match).
+  ///          dest_rect are invalid).
   ///
   virtual bool DrawBitmap(IntRect src_rect, IntRect dest_rect, RefPtr<Bitmap> src, bool pad_repeat)
       = 0;
@@ -277,6 +308,62 @@ class UExport Bitmap : public RefCounted {
   void operator=(const Bitmap&);
 };
 
-#pragma pack(pop)
+template <typename T>
+class LockedPixels {
+ public:
+  LockedPixels(const LockedPixels&) = delete;
+  LockedPixels& operator=(const LockedPixels&) = delete; 
+  LockedPixels(int) = delete;
+  explicit LockedPixels(T& lockable) : lockable_(lockable), data_(nullptr), size_(0) { lock(); }
+
+  ~LockedPixels() {
+    if (lockable_)
+      lockable_->UnlockPixels();
+  }
+
+  ///
+  /// Access the locked pixel data.
+  /// 
+  void* data() { return data_; }
+
+  ///
+  /// Access the size of the locked pixel data.
+  /// 
+  size_t size() { return size_; }
+
+  explicit operator bool() const { return !!lockable_; }
+
+  LockedPixels(LockedPixels&& other) : lockable_(other.lockable_), data_(other.data_), 
+      size_(other.size_) {
+    other.lockable_ = nullptr;
+    other.data_ = nullptr;  
+    other.size_ = 0;
+  }
+
+  LockedPixels& operator=(LockedPixels&& other) {
+    if (lockable_)
+      lockable_->UnlockPixels();
+    lockable_ = other.lockable_;
+    data_ = other.data_;
+    size_ = other.size_;
+    other.lockable_ = nullptr;
+    other.data_ = nullptr;
+    other.size_ = 0;
+    return *this;
+  }
+
+ private:
+  void lock() {
+    if (lockable_) {
+      data_ = lockable_->LockPixels();
+      size_ = lockable_->size();
+    }
+  }
+
+  T lockable_;
+  void* data_;
+  size_t size_;
+};
+
 
 } // namespace ultralight

@@ -1,4 +1,4 @@
-// Copyright 2020 Ultralight, Inc. All rights reserved.
+// Copyright 2022 Ultralight, Inc. All rights reserved.
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>

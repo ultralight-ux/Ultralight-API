@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 
@@ -35,6 +35,20 @@
 #   error This project can only be compiled with a compiler that supports C++11
 #endif
 
+#if INTPTR_MAX == INT32_MAX
+#define UL_ARCH_32_BIT
+#elif INTPTR_MAX == INT64_MAX
+#define UL_ARCH_64_BIT
+#else
+#error "Unknown CPU architecture: environment not 32 or 64-bit."
+#endif
+
+#if defined(__aarch64__)
+#  define UL_ARCH_ARM64
+#  if defined(__APPLE__)
+#    define UL_ARCH_ARM64_APPLE_SILICON
+#  endif
+#endif
 
 #if defined(__WIN32__) || defined(_WIN32)
 #  if defined(ULTRALIGHT_STATIC_BUILD)
@@ -98,5 +112,5 @@ UExport uint32_t UltralightVersionPatch();
 /// - GitHub:   <https://github.com/ultralight-ux/ultralight> -- Report issues and browse code
 ///
 /// @section copyright_sec Copyright
-/// Documentation is Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Documentation is Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///

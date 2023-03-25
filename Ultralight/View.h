@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -18,6 +18,7 @@
 #include <Ultralight/JavaScript.h>
 #include <Ultralight/MouseEvent.h>
 #include <Ultralight/ScrollEvent.h>
+#include <Ultralight/GamepadEvent.h>
 #include <Ultralight/RenderTarget.h>
 #include <Ultralight/Bitmap.h>
 #include <Ultralight/Listener.h>
@@ -27,20 +28,40 @@ namespace ultralight {
 
 struct UExport ViewConfig {
   ///
-  /// When enabled, the View will be rendered to an offscreen GPU texture
-  /// using the GPU driver set in Platform::set_gpu_driver. You can fetch
-  /// details for the texture via View::render_target.
+  /// Whether to render using the GPU renderer (accelerated) or the CPU renderer (unaccelerated).
+  /// 
+  /// This option is only valid if you're managing the Renderer yourself (eg, you've previously
+  /// called Renderer::Create() instead of App::Create()).
   ///
-  /// When disabled (the default), the View will be rendered to an offscreen
-  /// pixel buffer. This pixel buffer can optionally be provided by the user--
+  /// When true, the View will be rendered to an offscreen GPU texture using the GPU driver set in
+  /// Platform::set_gpu_driver. You can fetch details for the texture via View::render_target.
+  ///
+  /// When false (the default), the View will be rendered to an offscreen pixel buffer using the
+  /// multithreaded CPU renderer. This pixel buffer can optionally be provided by the user--
   /// for more info see <Ultralight/platform/Surface.h> and View::surface.
   ///
   bool is_accelerated = false;
 
+  ///
+  /// Whether or not this View should support transparency.
+  ///
+  /// @note Make sure to also set the following CSS on the page:
+  ///
+  ///    html, body { background: transparent; }
+  ///
   bool is_transparent = false;
 
+  ///
+  /// The initial device scale, ie. the amount to scale page units to screen pixels. This should
+  /// be set to the scaling factor of the device that the View is displayed on.
+  ///
+  /// @note 1.0 is equal to 100% zoom (no scaling), 2.0 is equal to 200% zoom (2x scaling)
+  ///
   double initial_device_scale = 1.0;
 
+  ///
+  /// Whether or not the View should initially have input focus, @see View::Focus()
+  ///
   bool initial_focus = true;
 
   ///
@@ -77,33 +98,33 @@ struct UExport ViewConfig {
   /// Default user-agent string.
   ///
   String user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                        "AppleWebKit/608.3.10 (KHTML, like Gecko) "
-                         "Ultralight/1.3.0 Safari/608.3.10";
+                      "AppleWebKit/605.1.15 (KHTML, like Gecko) "
+                      "Ultralight/1.3.0 Version/13.0.3 Safari/605.1.15";
 };
 
 ///
 /// @brief The View class is used to load and display web content.
 ///
-/// View is an offscreen web-page container that can be used to display
-/// web-content in your application.
+/// View is an offscreen web-page container that can be used to display web-content in your
+/// application.
 ///
-/// You can load content into a View via View::LoadURL() or View::LoadHTML()
-/// and interact with it via View::FireMouseEvent() and similar API.
+/// You can load content into a View via View::LoadURL() or View::LoadHTML() and interact with it
+/// via View::FireMouseEvent() and similar API.
 ///
-/// When displaying a View, the API is different depending on whether you
-/// are using the CPU renderer or the GPU renderer:
+/// When displaying a View, the API is different depending on whether you are using the CPU
+/// renderer or the GPU renderer:
 ///
-/// When using the CPU renderer, you would get the underlying pixel-buffer
-/// surface for a View via View::surface().
+/// When using the CPU renderer, you would get the underlying pixel-buffer surface for a View via
+/// View::surface().
 ///
-/// When using the GPU renderer, you would get the underlying render target
-/// and texture information via View::render_target().
+/// When using the GPU renderer, you would get the underlying render target and texture information
+/// via View::render_target().
 ///
-/// @note  The API is not currently thread-safe, all calls must be made on the
-///        same thread that the Renderer/App was created on.
+/// @note  The API is not currently thread-safe, all calls must be made on the same thread that the
+///        Renderer/App was created on.
 ///
 class UExport View : public RefCounted {
-public:
+ public:
   ///
   /// Get the URL of the current page loaded into this View, if any.
   ///
@@ -124,12 +145,27 @@ public:
   ///
   virtual uint32_t height() const = 0;
 
+  ///
+  /// Get the device scale, ie. the amount to scale page units to screen pixels.
+  /// 
+  /// For example, a value of 1.0 is equivalent to 100% zoom. A value of 2.0 is 200% zoom.
+  /// 
   virtual double device_scale() const = 0;
 
+  ///
+  /// Set the device scale.
+  /// 
   virtual void set_device_scale(double scale) = 0;
 
+  ///
+  /// Whether or not the View is GPU-accelerated. If this is false, the page will be rendered
+  /// via the CPU renderer.
+  /// 
   virtual bool is_accelerated() const = 0;
 
+  ///
+  /// Whether or not the View supports transparent backgrounds.
+  ///
   virtual bool is_transparent() const = 0;
 
   ///
@@ -138,23 +174,26 @@ public:
   virtual bool is_loading() = 0;
 
   ///
-  /// Get the offscreen RenderTarget for the View.
+  /// Get the RenderTarget for the View.
   ///
-  /// @note  Only valid when the GPU renderer is enabled in Config.
+  /// @note  Only valid if this View is GPU accelerated.
   ///
-  ///        You can use this with your GPUDriver implementation to bind
-  ///        and display the corresponding texture in your application.
+  ///        You can use this with your GPUDriver implementation to bind and display the
+  ///        corresponding texture in your application.
   ///
   virtual RenderTarget render_target() = 0;
 
   ///
-  /// Get the offscreen Surface for the View (pixel-buffer container).
+  /// Get the Surface for the View (native pixel buffer that the CPU renderer draws into).
   ///
-  /// @note  Only valid when the CPU is enabled (will return a nullptr
-  ///        otherwise)
+  /// @note  This operation is only valid if you're managing the Renderer yourself (eg, you've
+  ///        previously called Renderer::Create() instead of App::Create()).
   ///
-  ///        The default Surface is BitmapSurface but you can provide your
-  ///        own Surface implementation via Platform::set_surface_factory.
+  ///        This function will return nullptr if this View is GPU accelerated (eg, not using
+  ///        the CPU renderer). @see ViewConfig::is_accelerated
+  ///
+  ///        The default Surface is BitmapSurface but you can provide your own Surface
+  ///        implementation via Platform::set_surface_factory().
   ///
   virtual Surface* surface() = 0;
 
@@ -163,23 +202,21 @@ public:
   ///
   /// @param  html  The raw HTML string to load.
   ///
-  /// @param  url   An optional URL for this load (to make it appear as if we
-  ///               we loaded this HTML from a certain URL). Can be used for
-  ///               resolving relative URLs and cross-origin rules.
+  /// @param  url   An optional URL for this load (to make it appear as if we we loaded this HTML
+  ///               from a certain URL). Can be used for resolving relative URLs and cross-origin
+  ///               rules.
   ///
-  /// @param  add_to_history  Whether or not this load should be added to the
-  ///                         session's history (back/forward list).
+  /// @param  add_to_history  Whether or not this load should be added to the session's history
+  ///                         (eg, the back/forward list).
   ///
-  virtual void LoadHTML(const String& html,
-    const String& url = "", 
-    bool add_to_history = false) = 0;
+  virtual void LoadHTML(const String& html, const String& url = "", bool add_to_history = false)
+      = 0;
 
   ///
   /// Load a URL, the View will navigate to it as a new page.
   ///
-  /// @note  You can use File URLs (eg, file:///page.html) but you must define
-  ///        your own FileSystem implementation if you are not using AppCore.
-  ///        @see Platform::set_file_system
+  /// @note  You can use File URLs (eg, file:///page.html) but you must define your own FileSystem
+  ///        implementation if you are not using AppCore. @see Platform::set_file_system
   ///
   virtual void LoadURL(const String& url) = 0;
 
@@ -187,7 +224,7 @@ public:
   /// Resize View to a certain size.
   ///
   /// @param  width   The initial width, in pixels.
-  /// 
+  ///
   /// @param  height  The initial height, in pixels.
   ///
   ///
@@ -196,37 +233,41 @@ public:
   ///
   /// Acquire the page's JSContext for use with the JavaScriptCore API
   ///
-  /// @note  You can use the underlying JSContextRef with the JavaScriptCore
-  ///        C API. This allows you to marshall C/C++ objects to/from
-  ///        JavaScript, bind callbacks, and call JS functions directly.
+  /// @note  You can use the underlying JSContextRef with the JavaScriptCore C API. This allows you
+  ///        to marshall C/C++ objects to/from JavaScript, bind callbacks, and call JS functions
+  ///        directly.
   ///
-  /// @note  The JSContextRef gets reset after each page navigation. You
-  ///        should initialize your JavaScript state within the
-  ///        OnWindowObjectReady and OnDOMReady events, @see ViewListener.
+  /// @note  The JSContextRef gets reset after each page navigation. You should initialize your
+  ///        JavaScript state within the OnWindowObjectReady and OnDOMReady events,
+  ///        @see ViewListener.
   ///
-  /// @note  This call locks the internal context for the current thread.
-  ///        It will be unlocked when the returned JSContext's ref-count goes
-  ///        to zero. The lock is recursive, you can call this multiple times.
+  /// @note  This call locks the internal context for the current thread. It will be unlocked when
+  ///        the returned JSContext's ref-count goes to zero. The lock is recursive, you can call
+  ///        this multiple times.
   ///
   virtual RefPtr<JSContext> LockJSContext() = 0;
 
   ///
-  /// Helper function to evaluate a raw string of JavaScript and return the
-  /// result as a String.
+  /// Get a handle to the internal JavaScriptCore VM.
+  ///
+  virtual void* JavaScriptVM() = 0;
+
+  ///
+  /// Helper function to evaluate a raw string of JavaScript and return the result as a String.
   ///
   /// @param  script     A string of JavaScript to evaluate in the main frame.
   ///
-  /// @param  exception  A string to store the exception in, if any. Pass a
-  ///                    nullptr if you don't care about exceptions.
+  /// @param  exception  A string to store the exception in, if any. Pass a nullptr if you don't
+  ///                    care about exceptions.
   ///
   /// @return  Returns the JavaScript result typecast to a String.
   ///
   ///
   /// @note  You do not need to lock the JS context, it is done automatically.
   ///
-  /// @note  If you need lower-level access to native JavaScript values, you
-  ///        should instead lock the JS context and call JSEvaluateScript() in
-  ///        the JavaScriptCore C API. @see <JavaScriptCore/JSBase.h>
+  /// @note  If you need lower-level access to native JavaScript values, you should instead lock
+  ///        the JS context and call JSEvaluateScript() in the JavaScriptCore C API.
+  ///        @see <JavaScriptCore/JSBase.h>
   ///
   virtual String EvaluateScript(const String& script, String* exception = nullptr) = 0;
 
@@ -268,16 +309,15 @@ public:
   ///
   /// Give focus to the View.
   ///
-  /// You should call this to give visual indication that the View has input
-  /// focus (changes active text selection colors, for example).
+  /// You should call this to give visual indication that the View has input focus (changes active
+  /// text selection colors, for example).
   ///
   virtual void Focus() = 0;
 
   ///
   /// Remove focus from the View and unfocus any focused input elements.
   ///
-  /// You should call this to give visual indication that the View has lost
-  /// input focus.
+  /// You should call this to give visual indication that the View has lost input focus.
   ///
   virtual void Unfocus() = 0;
 
@@ -287,14 +327,14 @@ public:
   virtual bool HasFocus() = 0;
 
   ///
-  /// Whether or not the View has an input element with visible keyboard focus
-  /// (indicated by a blinking caret).
+  /// Whether or not the View has an input element with visible keyboard focus (indicated by a
+  /// blinking caret).
   ///
-  /// You can use this to decide whether or not the View should consume
-  /// keyboard input events (useful in games with mixed UI and key handling).
+  /// You can use this to decide whether or not the View should consume keyboard input events
+  /// (useful in games with mixed UI and key handling).
   ///
   virtual bool HasInputFocus() = 0;
-  
+
   ///
   /// Fire a keyboard event
   ///
@@ -318,7 +358,7 @@ public:
   /// @note  Ownership remains with the caller.
   ///
   virtual void set_view_listener(ViewListener* listener) = 0;
-  
+
   ///
   /// Get the active ViewListener, if any
   ///
@@ -337,11 +377,10 @@ public:
   virtual LoadListener* load_listener() const = 0;
 
   ///
-  /// Set whether or not this View should be repainted during the next
-  /// call to Renderer::Render
+  /// Set whether or not this View should be repainted during the next call to Renderer::Render
   ///
-  /// @note  This flag is automatically set whenever the page content changes
-  ///        but you can set it directly in case you need to force a repaint.
+  /// @note  This flag is automatically set whenever the page content changes but you can set it
+  ///        directly in case you need to force a repaint.
   ///
   virtual void set_needs_paint(bool needs_paint) = 0;
 
@@ -352,20 +391,19 @@ public:
   virtual bool needs_paint() const = 0;
 
   ///
-  /// Get the inspector for this View, this is useful for debugging and
-  /// inspecting pages locally. This will only succeed if you have the
-  /// inspector assets in your filesystem-- the inspector will look for
-  /// file:///inspector/Main.html when it first loads.
+  /// Create an Inspector View to inspect / debug this View locally.
+  /// 
+  /// This will only succeed if you have the inspector assets in your filesystem-- the inspector
+  /// will look for file:///inspector/Main.html when it first loads.
+  /// 
+  /// You must handle ViewListener::OnCreateInspectorView so that the library has a View to display
+  /// the inspector in. This function will call this event only if an inspector view is not
+  /// currently active.
   ///
-  /// @note  The inspector View is owned by the View and lazily-created on
-  ///        first call. The initial dimensions are 10x10, you should call
-  ///        View::Resize() on the returned View to resize it to your desired
-  ///        dimensions.
-  ///
-  virtual RefPtr<View> inspector() = 0;
+  virtual void CreateLocalInspectorView() = 0;
 
-protected:
+ protected:
   virtual ~View();
 };
 
-}  // namespace ultralight
+} // namespace ultralight

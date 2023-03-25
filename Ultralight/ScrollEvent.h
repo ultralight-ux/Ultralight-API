@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2020 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -22,15 +22,15 @@ namespace ultralight {
 /// @note   @see View::FireScrollEvent
 ///
 class ScrollEvent {
-public:
+ public:
   ///
   /// The scroll event granularity type
   ///
   enum Type {
-	  /// The delta value is interpreted as number of pixels
+    /// The delta value is interpreted as number of pixels
     kType_ScrollByPixel,
 
-	  /// The delta value is interpreted as number of pages
+    /// The delta value is interpreted as number of pages
     kType_ScrollByPage,
   };
 
@@ -50,4 +50,4 @@ public:
   int delta_y;
 };
 
-}  // namespace ultralight
+} // namespace ultralight

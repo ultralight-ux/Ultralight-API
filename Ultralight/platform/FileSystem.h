@@ -9,23 +9,14 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String.h>
+#include <Ultralight/Buffer.h>
 
 namespace ultralight {
-
-///
-/// File Handle type used as unique ID for opened files.
-///
-typedef size_t FileHandle;
-
-///
-/// Handle used to denote an invalid file.
-///
-const FileHandle invalidFileHandle = (FileHandle)-1;
 
 ///
 /// @brief  FileSystem interface.
@@ -54,35 +45,44 @@ class UExport FileSystem {
   ///
   /// Check if file path exists, return true if exists.
   ///
-  virtual bool FileExists(const String& path) = 0;
+  virtual bool FileExists(const String& file_path) = 0;
 
   ///
-  /// Get file size of previously opened file, store result in 'result'. Return true on success.
+  /// Get the mime-type of the file (eg "text/html").
+  /// 
+  /// This is usually determined by analyzing the file extension.
+  /// 
+  /// If a mime-type cannot be determined, this should return "application/unknown".
   ///
-  virtual bool GetFileSize(FileHandle handle, int64_t& result) = 0;
+  virtual String GetFileMimeType(const String& file_path) = 0;
 
   ///
-  /// Get file mime type (eg "text/html"), store result in 'result'. Return true on success.
-  ///
-  virtual bool GetFileMimeType(const String& path, String& result) = 0;
+  /// Get the charset / encoding of the file (eg "utf-8", "iso-8859-1").
+  /// 
+  /// This is only applicable for text-based files (eg, "text/html", "text/plain") and is usually
+  /// determined by analyzing the contents of the file.
+  /// 
+  /// If a charset cannot be determined, a safe default to return is "utf-8".
+  /// 
+  virtual String GetFileCharset(const String& file_path) = 0;
 
   ///
-  /// Open file path for reading or writing. Return file handle on success, or invalidFileHandle on
-  /// failure.
+  /// Open file for reading and map it to a Buffer.
+  /// 
+  /// To minimize copies, you should map the requested file into memory and use Buffer::Create()
+  /// to wrap the data pointer (unmapping should be performed in the destruction callback).
+  /// 
+  /// If the file was unable to be opened, you should return nullptr for this value.
   ///
-  /// @NOTE:  As of this writing (v1.3), this function is only used for reading.
-  ///
-  virtual FileHandle OpenFile(const String& path, bool open_for_writing) = 0;
-
-  ///
-  /// Close previously-opened file.
-  ///
-  virtual void CloseFile(FileHandle& handle) = 0;
-
-  ///
-  /// Read from currently-opened file, return number of bytes read or -1 on failure.
-  ///
-  virtual int64_t ReadFromFile(FileHandle handle, char* data, int64_t length) = 0;
+  /// @note  File data addresses returned from this function should generally be aligned to 16-byte
+  ///        boundaries (the default alignment on most operating systems-- if you're using C stdlib
+  ///        or C++ STL functions this is already handled for you). This requirement is currently
+  ///        necessary when loading the ICU data file (eg, icudt67l.dat), and may be relaxed for
+  ///        other files (but you may still see a performance benefit due to cache line alignment).
+  ///        If you can't guarantee alignment or are unsure, you can use Buffer::CreateFromCopy to
+  ///        copy the file data content to an aligned block (at the expense of data duplication).
+  /// 
+  virtual RefPtr<Buffer> OpenFile(const String& file_path) = 0;
 };
 
 } // namespace ultralight

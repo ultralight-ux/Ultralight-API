@@ -9,7 +9,7 @@
 ///
 /// Website: <http://ultralig.ht>
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
 ///
 #pragma once
 #include <Ultralight/Defines.h>
@@ -399,14 +399,14 @@ struct UExport vec4 {
             (a.w < b.w) ? b.w : a.w };
   }
 
-  constexpr void load(const float* val) {
+  inline void load(const float* val) {
     x = val[0];
     y = val[1];
     z = val[2];
     w = val[3];
   }
 
-  constexpr void store(float* val) const {
+  inline void store(float* val) const {
     val[0] = x;
     val[1] = y;
     val[2] = z;
