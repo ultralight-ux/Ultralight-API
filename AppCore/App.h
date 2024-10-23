@@ -1,16 +1,10 @@
-///
-/// @file App.h
-///
-/// @brief The header for the App class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include "Defines.h"
 #include <Ultralight/RefPtr.h>
@@ -89,7 +83,76 @@ struct AExport Settings {
 };
 
 ///
-/// Main application class.
+/// Main application singleton (use this if you want to let the library manage window creation).
+/// 
+/// This convenience class sets up everything you need to display web-based content in a
+/// desktop application.
+///
+/// The App class initializes the Platform singleton with OS-specific defaults, creates a Renderer,
+/// and automatically manages window creation, run loop, input events, and painting.
+///
+/// ## Creating the App
+///
+/// Call App::Create() to initialize the library and create the App singleton.
+///
+/// ```
+///   auto app = App::Create();
+/// ```
+///
+/// ## Creating a Window
+///
+/// Call Window::Create() to create one or more windows during the lifetime of your app.
+///
+/// ```
+///   auto window = Window::Create(app->main_monitor(), 1024, 768, false, 
+///                                kWindowFlags_Titled | kWindowFlags_Resizable);
+/// ```
+///
+/// ### Creating an Overlay in a Window
+///
+/// Each Window can have one or more Overlay instances. Overlays are used to display web-based
+/// content in a portion of the window.
+///
+/// Call Overlay::Create() to create an overlay in a window.
+///
+/// ```
+///   auto overlay = Overlay::Create(window, 1024, 768, 0, 0);
+/// ```
+///
+/// Each Overlay has a View instance that you can use to load web content into.
+///
+/// ```
+///   overlay->view()->LoadURL("https://google.com");
+/// ```
+///
+/// ## Running the App
+///
+/// Call App::Run() to start the main run loop.
+///
+/// ```
+/// #include <AppCore/AppCore.h>
+///
+/// using namespace ultralight;
+///
+/// int main() {
+///   // Initialize app, window, overlay, etc. here...
+///
+///   app->Run();
+///
+///   return 0;
+/// }
+/// ```
+///
+/// ## Shutting Down the App
+///
+/// Call App::Quit() to stop the main run loop and shut down the app.
+///
+/// ```
+///   app->Quit();
+/// ```
+
+/// @note  This is optional, you can use the Renderer class directly if you want to manage your
+///        own windows and run loop.
 ///
 class AExport App : public RefCounted {
 public:
@@ -105,7 +168,7 @@ public:
   /// @note  You should only create one of these per application lifetime.
   ///
   /// @note  Certain Config options may be overridden during App creation,
-  ///        most commonly Config::face_winding and Config::device_scale_hint.
+  ///        most commonly Config::face_winding and Config::cache_path.
   ///
   static RefPtr<App> Create(Settings settings = Settings(), Config config = Config());
 

@@ -1,3 +1,30 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_FontLoader.h
+///
+/// User-defined font loader interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_FontLoader.h>`
+///
+/// The library uses this to load a font file (eg, `Arial.ttf`) for a given font description (eg, 
+/// `font-family: Arial;`).
+///
+/// Every OS has its own library of installed system fonts. The FontLoader interface is used to
+/// lookup these fonts and fetch the actual font data (raw TTF/OTF file data) for a given font
+/// description.
+///
+/// You can provide the library with your own font loader implementation so that you can bundle
+/// fonts with your application rather than relying on the system's installed fonts.
+///
+/// @see ulPlatformSetFontLoader
+/// 
 #ifndef ULTRALIGHT_CAPI_FONTLOADER_H
 #define ULTRALIGHT_CAPI_FONTLOADER_H
 
@@ -53,6 +80,12 @@ typedef ULString (*ULFontLoaderGetFallbackFontForCharacters)(ULString characters
 ///
 typedef ULFontFile (*ULFontLoaderLoad)(ULString family, int weight, bool italic);
 
+/// 
+/// User-defined font loader interface.
+///
+/// You should implement each of these callbacks, then pass an instance of this struct containing
+/// your callbacks to ulPlatformSetFontLoader().
+///
 typedef struct {
   ULFontLoaderGetFallbackFont get_fallback_font;
   ULFontLoaderGetFallbackFontForCharacters get_fallback_font_for_characters;

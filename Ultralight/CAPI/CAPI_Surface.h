@@ -1,3 +1,44 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Surface.h
+///
+/// User-defined pixel buffer surface. 
+///
+/// `#include <Ultralight/CAPI/CAPI_Surface.h>`
+///
+/// The library uses this to store pixel data when rendering Views on the CPU (see
+/// ulViewIsAccelerated()).
+///
+/// You can provide the library with your own Surface implementation to reduce the latency of
+/// displaying pixels in your application (Views will be drawn directly to a block of memory
+/// controlled by you).
+///
+/// When a View is rendered on the CPU, you can retrieve the backing Surface via ulViewGetSurface().
+///
+/// @pre This is automatically managed for you when using ulCreateApp(), if you want to override
+///      ULSurfaceDefinition, you'll need to use ulCreateRenderer() instead.
+///
+/// ## Default Implementation
+///
+/// A default Surface implementation, BitmapSurface, is automatically provided by the library when
+/// you call ulCreateRenderer() without defining a custom ULSurfaceDefinition.
+///
+/// You should cast the ULSurface to a ULBitmapSurface and call ulBitmapSurfaceGetBitmap() to access
+/// the underlying Bitmap.
+///
+/// ## Setting the Surface Implementation
+///
+/// To define your own implementation, you should implement the ULSurfaceDefinition callbacks,
+/// and then pass an instance of ULSurfaceDefinition containing your callbacks to 
+/// ulPlatformSetSurfaceDefinition() before calling ulCreateRenderer().
+///
 #ifndef ULTRALIGHT_CAPI_SURFACE_H
 #define ULTRALIGHT_CAPI_SURFACE_H
 
@@ -184,6 +225,12 @@ typedef void (*ULSurfaceDefinitionUnlockPixelsCallback)(void* user_data);
 typedef void (*ULSurfaceDefinitionResizeCallback)(void* user_data, unsigned int width,
                                                   unsigned int height);
 
+/// 
+/// User-defined surface interface.
+///
+/// You should implement each of these callbacks, then pass an instance of this struct containing
+/// your callbacks to ulPlatformSetSurfaceDefinition().
+///
 typedef struct {
   ULSurfaceDefinitionCreateCallback create;
   ULSurfaceDefinitionDestroyCallback destroy;

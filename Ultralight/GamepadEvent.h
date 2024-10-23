@@ -1,16 +1,10 @@
-///
-/// @file GamepadEvent.h
-///
-/// @brief The header for various gamepad events.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String.h>
@@ -18,9 +12,9 @@
 namespace ultralight {
 
 ///
-/// @brief  A gamepad event.
+/// Event representing a change in gamepad connection state.
 ///
-/// @see    View::FireGamepadEvent
+/// @see  Renderer::FireGamepadEvent
 ///
 class UExport GamepadEvent {
  public:
@@ -32,8 +26,8 @@ class UExport GamepadEvent {
     /// This event type should be fired when a gamepad is connected.
     ///
     /// @note  You will need to previously declare the gamepad, its index, and details about
-    ///        its axis and button layout via View::SetGamepadDetails prior to calling
-    ///        View::FireGamepadEvent.
+    ///        its axis and button layout via Renderer::SetGamepadDetails prior to calling
+    ///        Renderer::FireGamepadEvent.
     /// 
     kType_GamepadConnected,
     
@@ -50,28 +44,28 @@ class UExport GamepadEvent {
 
   ///
   /// The index of the gamepad, this should match the value previously set in
-  /// View::SetGamepadDetails.
+  /// Renderer::SetGamepadDetails.
   ///
   uint32_t index;
 };
 
 ///
-/// @brief  A gamepad axis event.
+/// Event representing a change in gamepad axis state (eg, pressing a stick in a certain direction).
 ///
-/// @see    View::FireGamepadAxisEvent
+/// @see  Renderer::FireGamepadAxisEvent
 ///
 class UExport GamepadAxisEvent {
  public:
   ///
   /// The index of the gamepad, this should match the value previously set in
-  /// View::SetGamepadDetails.
+  /// Renderer::SetGamepadDetails.
   ///
   uint32_t index;
 
   ///
   /// The index of the axis whose value has changed.
   ///
-  /// This value should be in the range previously set in View::SetGamepadDetails.
+  /// This value should be in the range previously set in Renderer::SetGamepadDetails.
   ///
   uint32_t axis_index;
 
@@ -84,22 +78,22 @@ class UExport GamepadAxisEvent {
 };
 
 ///
-/// @brief  A gamepad button event.
+/// Event representing a change in gamepad button state (eg, pressing a button on a gamepad).
 ///
-/// @see    View::FireGamepadButtonEvent
+/// @see    Renderer::FireGamepadButtonEvent
 ///
 class UExport GamepadButtonEvent {
  public:
   ///
   /// The index of the gamepad, this should match the value previously set in
-  /// View::SetGamepadDetails.
+  /// Renderer::SetGamepadDetails.
   ///
   uint32_t index;
 
   ///
   /// The index of the button whose value has changed.
   ///
-  /// This value should be in the range previously set in View::SetGamepadDetails.
+  /// This value should be in the range previously set in Renderer::SetGamepadDetails.
   ///
   uint32_t button_index;
 

@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Geometry.h
+///
+/// Geometry utilities.
+///
+/// `#include <Ultralight/CAPI/CAPI_Geometry.h>`
+///
+/// This file defines the C API for various geometry utilities.
+///
 #ifndef ULTRALIGHT_CAPI_GEOMETRY_H
 #define ULTRALIGHT_CAPI_GEOMETRY_H
 

@@ -1,8 +1,10 @@
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <AppCore/Defines.h>
 #include <JavaScriptCore/JavaScript.h>
@@ -20,8 +22,7 @@ namespace ultralight {
 /// context (JSContextRef). You can get the JSContextRef for a page via
 /// `View::LockJSContext()`. This context changes with each page navigation.
 ///
-/// **Note**:
-///    You MUST set a JSContext before using most of the C++ API below.
+/// @note You MUST set a JSContext before using most of the C++ API below.
 ///
 void AExport SetJSContext(JSContextRef ctx);
 
@@ -215,7 +216,7 @@ public:
   ///
   /// Set the JSContext for this JSValue.
   ///
-  /// **Note**:
+  /// @note
   ///    JSValues created from within a JSCallback have a temporary JSContext
   ///    that is destroyed when the callback returns. You will need to "move"
   ///    any JSValues created within these callbacks to the View's main context
@@ -257,7 +258,7 @@ public:
   ///
   /// Access an element of the argument list by index.
   ///
-  /// **Note**:
+  /// @note
   ///    All JSValues are actually wrappers of JSValueRef instances so even
   ///    though this function doesn't return a JSValue& you are still operating
   ///    directly on the underlying JavaScript value instance.
@@ -267,7 +268,7 @@ public:
   ///
   /// Access an element of the argument list by index. (const overload)
   ///
-  /// **Note**:
+  /// @note
   ///    All JSValues are actually wrappers of JSValueRef instances so even
   ///    though this function doesn't return a JSValue& you are still operating
   ///    directly on the underlying JavaScript value instance.
@@ -320,8 +321,8 @@ typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRet
 ///
 /// Usage: JSCallback callback = BindJSCallback(&MyClass::MyMemberFunction);
 ///
-/// **Note**: Expected to run from within an instance of 'MyClass', note the
-///           'this' keyword in the macro.
+/// @note Expected to run from within an instance of 'MyClass', note the 'this' keyword in the
+///       macro.
 ///
 #define BindJSCallback(fn) (JSCallback)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
 
@@ -330,8 +331,8 @@ typedef std::function<JSValue(const JSObject&, const JSArgs&)> JSCallbackWithRet
 ///
 /// Usage: JSCallback callback = BindJSCallback(&MyClass::MyMemberFunction);
 ///
-/// **Note**: Expected to run from within an instance of 'MyClass', note the
-///           'this' keyword in the macro.
+/// @note Expected to run from within an instance of 'MyClass', note the 'this' keyword in the 
+///       macro.
 ///
 #define BindJSCallbackWithRetval(fn) (JSCallbackWithRetval)std::bind(fn, this, std::placeholders::_1, std::placeholders::_2)
 
@@ -414,7 +415,7 @@ public:
   ///
   /// Set the JSContext for this JSArray.
   ///
-  /// **Note**:
+  /// @note
   ///    JSArrays created from within a JSCallback have a temporary JSContext
   ///    that is destroyed when the callback returns. You will need to "move"
   ///    any JSArrays created within these callbacks to the View's main context
@@ -471,7 +472,7 @@ public:
   ///
   /// Set the JSContext for this JSObject.
   ///
-  /// **Note**:
+  /// @note:
   ///    JSObjects created from within a JSCallback have a temporary JSContext
   ///    that is destroyed when the callback returns. You will need to "move"
   ///    any JSObjects created within these callbacks to the View's main context
@@ -528,7 +529,7 @@ public:
   ///
   /// Set the JSContext for this JSFunction.
   ///
-  /// **Note**:
+  /// @note
   ///    JSFunctions created from within a JSCallback have a temporary JSContext
   ///    that is destroyed when the callback returns. You will need to "move"
   ///    any JSFunctions created within these callbacks to the View's main context

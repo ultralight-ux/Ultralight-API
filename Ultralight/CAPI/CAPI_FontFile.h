@@ -1,3 +1,22 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_FontFile.h
+///
+/// Font file interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_FontFile.h>`
+///
+/// The font file interface represents a font file: either on-disk path or in-memory file contents.
+///
+/// @see ULFontLoader
+///
 #ifndef ULTRALIGHT_CAPI_FONTFILE_H
 #define ULTRALIGHT_CAPI_FONTFILE_H
 

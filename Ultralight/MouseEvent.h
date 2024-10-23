@@ -1,25 +1,19 @@
-///
-/// @file MouseEvent.h
-///
-/// @brief The header for the MouseEvent class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 
 namespace ultralight {
 
 ///
-/// @brief  A generic mouse event.
+/// Mouse event representing a change in mouse state.
 ///
-/// @note   @see View::FireMouseEvent
+/// @see View::FireMouseEvent
 ///
 class MouseEvent {
 public:
@@ -27,19 +21,19 @@ public:
   /// The various MouseEvent types.
   ///
   enum Type {
-	///
+    ///
     /// Mouse moved type
-	///
+    ///
     kType_MouseMoved,
 
-	///
+    ///
     /// Mouse button pressed type
-	///
+    ///
     kType_MouseDown,
 
-	///
+    ///
     /// Mouse button released type
-	///
+    ///
     kType_MouseUp,
   };
 

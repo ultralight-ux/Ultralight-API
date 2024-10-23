@@ -1,16 +1,10 @@
-///
-/// @file Config.h
-///
-/// @brief The header for the Config struct.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String.h>
@@ -20,7 +14,7 @@ namespace ultralight {
 ///
 /// The winding order for front-facing triangles. (Only used when the GPU renderer is used)
 ///
-enum class UExport FaceWinding : uint8_t {
+enum class FaceWinding : uint8_t {
   ///
   /// Clockwise Winding (Direct3D, etc.)
   ///
@@ -32,7 +26,7 @@ enum class UExport FaceWinding : uint8_t {
   CounterClockwise,
 };
 
-enum class UExport FontHinting : uint8_t {
+enum class FontHinting : uint8_t {
   ///
   /// Lighter hinting algorithm-- glyphs are slightly fuzzier but better resemble their original
   /// shape. This is achieved by snapping glyphs to the pixel grid only vertically which better
@@ -58,78 +52,129 @@ enum class UExport FontHinting : uint8_t {
   None,
 };
 
+enum class EffectQuality : uint8_t {
+  ///
+  /// Fastest effect quality-- uses the lowest quality effects (half-resolution, fewer passes, etc.)
+  /// 
+  Low,
+
+  ///
+  /// Default effect quality-- strikes a good balance between quality and performance.
+  /// 
+  Medium,
+
+  ///
+  /// Highest effect quality-- favors quality over performance.
+  /// 
+  High,
+};
+
 ///
-/// @brief  Configuration settings for Ultralight.
+/// Core configuration for the renderer.
 ///
-/// This is intended to be implemented by users and defined before creating the Renderer. @see
-/// Platform::set_config.
+/// These are various configuration options that can be used to customize the behavior of the
+/// library. These options can only be set once before creating the Renderer.
+///
+/// ## Setting the Config
+/// 
+/// You should create an instance of the Config struct, set its members, and then call
+/// Platform::set_config() before creating the Renderer at the beginning of your
+/// application's lifetime.
+/// 
+/// @par Example usage
+/// ```
+///   Config config;
+///   config.user_stylesheet = "body { background: purple; }";
+/// 
+///   Platform::instance().set_config(config);
+///   // (Setup other Platform interfaces here.)
+/// 
+///   auto renderer = Renderer::Create();
+/// ```
 ///
 struct UExport Config {
   ///
-  /// The file path to a writable directory that will be used to store cookies, cached resources,
-  /// and other persistent data.
+  /// A writable OS file path to store persistent Session data in.
   /// 
-  /// Files are only written to disk when using a persistent Session (see Renderer::CreateSession).
+  /// This data may include cookies, cached network resources, indexed DB, etc.
+  /// 
+  /// @note Files are only written to the path when using a persistent Session.
+  /// 
+  /// @see Renderer::CreateSession()
   ///
   String cache_path;
 
   ///
-  /// The library loads bundled resources (eg, cacert.pem and other localized resources) from the
-  /// FileSystem API (eg, `file:///resources/cacert.pem`). You can customize the prefix to use when
-  /// loading resource URLs by modifying this setting.
+  /// The relative path to the resources folder (loaded via the FileSystem API).
+  /// 
+  /// The library loads certain resources (SSL certs, ICU data, etc.) from the FileSystem API
+  /// during runtime (eg, `file:///resources/cacert.pem`).
+  /// 
+  /// You can customize the relative file path to the resources folder by modifying this setting.
+  /// 
+  /// @see FileSystem
   ///
   String resource_path_prefix = "resources/";
 
   ///
-  /// The winding order for front-facing triangles. @see FaceWinding
+  /// The winding order for front-facing triangles.
   ///
-  /// Note: This is only used when the GPU renderer is enabled.
+  /// @pre Only used when GPU rendering is enabled for the View.
+  ///
+  /// @see FaceWinding
   ///
   FaceWinding face_winding = FaceWinding::CounterClockwise;
 
   ///
-  /// The hinting algorithm to use when rendering fonts. @see FontHinting
+  /// The hinting algorithm to use when rendering fonts.
+  /// 
+  /// @see FontHinting
   ///
   FontHinting font_hinting = FontHinting::Normal;
 
   ///
-  /// The gamma to use when compositing font glyphs, change this value to adjust contrast (Adobe
-  /// and Apple prefer 1.8, others may prefer 2.2).
+  /// The gamma to use when compositing font glyphs.
+  /// 
+  /// You can change this value to adjust font contrast (Adobe and Apple prefer 1.8).
   ///
   double font_gamma = 1.8;
 
   ///
-  /// Default user stylesheet. You should set this to your own custom CSS string to define default
-  /// styles for various DOM elements, scrollbars, and platform input widgets.
+  /// Global user-defined CSS string (included before any CSS on the page).
+  /// 
+  /// You can use this to override default styles for various elements on the page.
+  /// 
+  /// @note This is an actual string of CSS, not a file path.
   ///
   String user_stylesheet;
 
   ///
-  /// Whether or not we should continuously repaint any Views or compositor layers, regardless if
-  /// they are dirty or not. This is mainly used to diagnose painting/shader issues.
+  /// Whether or not to continuously repaint any Views, regardless if they are dirty.
+  /// 
+  /// This is mainly used to diagnose painting/shader issues and profile performance.
   ///
   bool force_repaint = false;
 
   ///
-  /// When a CSS animation is active, the amount of time (in seconds) to wait before triggering
-  /// another repaint. Default is 60 Hz.
+  /// The delay (in seconds) between every tick of a CSS animation. (Default: 60 FPS)
   ///
   double animation_timer_delay = 1.0 / 60.0;
 
   ///
-  /// When a smooth scroll animation is active, the amount of time (in seconds) to wait before
-  /// triggering another repaint. Default is 60 Hz.
+  /// The delay (in seconds) between every tick of a smooth scroll animation. (Default: 60 FPS)
   ///
   double scroll_timer_delay = 1.0 / 60.0;
 
   ///
-  /// The amount of time (in seconds) to wait before running the recycler (will attempt to return
-  /// excess memory back to the system).
+  /// The delay (in seconds) between every call to the recycler.
+  /// 
+  /// The library attempts to reclaim excess memory during calls to the internal recycler. You can
+  /// change how often this is run by modifying this value.
   ///
   double recycle_delay = 4.0;
 
   ///
-  /// Size of WebCore's memory cache in bytes.
+  /// The size of WebCore's memory cache in bytes.
   ///
   /// @note  You should increase this if you anticipate handling pages with large resources, Safari
   ///        typically uses 128+ MiB for its cache.
@@ -137,15 +182,23 @@ struct UExport Config {
   uint32_t memory_cache_size = 64 * 1024 * 1024;
 
   ///
-  /// Number of pages to keep in the cache. Defaults to 0 (none).
+  /// The number of pages to keep in the cache. (Default: 0, none)
   ///
-  /// @note  Safari typically caches about 5 pages and maintains an on-disk cache to support
-  ///        typical web-browsing activities. If you increase this, you should probably increase
-  ///        the memory cache size as well.
+  /// @note
+  /// \parblock
+  /// 
+  /// Safari typically caches about 5 pages and maintains an on-disk cache to support typical
+  /// web-browsing activities.
+  /// 
+  /// If you increase this, you should probably increase the memory cache size as well.
+  /// 
+  /// \endparblock
   ///
   uint32_t page_cache_size = 0;
 
   ///
+  /// The system's physical RAM size in bytes.
+  /// 
   /// JavaScriptCore tries to detect the system's physical RAM size to set reasonable allocation
   /// limits. Set this to anything other than 0 to override the detected value. Size is in bytes.
   ///
@@ -155,14 +208,16 @@ struct UExport Config {
   uint32_t override_ram_size = 0;
 
   ///
-  /// The minimum size of large VM heaps in JavaScriptCore. Set this to a lower value to make these
-  /// heaps start with a smaller initial value.
+  /// The minimum size of large VM heaps in JavaScriptCore.
+  /// 
+  /// Set this to a lower value to make these heaps start with a smaller initial value.
   ///
   uint32_t min_large_heap_size = 32 * 1024 * 1024;
 
   ///
-  /// The minimum size of small VM heaps in JavaScriptCore. Set this to a lower value to make these
-  /// heaps start with a smaller initial value.
+  /// The minimum size of small VM heaps in JavaScriptCore.
+  /// 
+  /// Set this to a lower value to make these heaps start with a smaller initial value.
   ///
   uint32_t min_small_heap_size = 1 * 1024 * 1024;
 
@@ -171,17 +226,25 @@ struct UExport Config {
   /// 
   /// You can set this to a certain number to limit the number of threads to spawn.
   /// 
-  /// @note  If this value is 0 (the default), the number of threads will be determined at runtime
-  ///        using the following formula:
+  /// @note
+  /// \parblock
   /// 
-  ///        max(PhysicalProcessorCount() - 1, 1)
+  /// If this value is 0, the number of threads will be determined at runtime using the following
+  /// formula: 
+  /// 
+  ///   ```
+  ///   max(PhysicalProcessorCount() - 1, 1)
+  ///   ```
+  /// 
+  /// \endparblock
   /// 
   uint32_t num_renderer_threads = 0;
 
   /// 
   /// The max amount of time (in seconds) to allow repeating timers to run during each call to
-  /// Renderer::Update. The library will attempt to throttle timers and/or reschedule work if this
-  /// time budget is exceeded.
+  /// Renderer::Update.
+  /// 
+  /// The library will attempt to throttle timers if this time budget is exceeded.
   ///
   double max_update_time = 1.0 / 200.0;
 
@@ -201,6 +264,11 @@ struct UExport Config {
   /// slight cost to performance.
   ///
   uint32_t bitmap_alignment = 16;
+
+  ///
+  /// The quality of effects (blurs, CSS filters, SVG filters, etc.) to use when rendering.
+  /// 
+  EffectQuality effect_quality = EffectQuality::Medium;
 };
 
 } // namespace ultralight

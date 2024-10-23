@@ -1,16 +1,10 @@
-///
-/// @file String8.h
-///
-/// @brief The header for the String8 class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <stddef.h>
@@ -21,10 +15,13 @@ class String16;
 class String32;
 
 ///
-/// @brief  A UTF-8 string container.
+/// A null-terminated UTF-8 string container.
 //
 class UExport String8 {
 public:
+  // Native character type
+  typedef char CharType;
+
   // Make an empty String8
   String8();
 
@@ -37,10 +34,17 @@ public:
   // Make a deep copy of String8
   String8(const String8& other);
 
+  // Move constructor
+  String8(String8&& other);
+
+  // Destructor
   ~String8();
 
   // Assign a String8 to this one, deep copy is made
   String8& operator=(const String8& other);
+
+  // Move assignment operator
+  String8& operator=(String8&& other);
 
   // Append a String8 to this one.
   String8& operator+=(const String8& other);
@@ -77,6 +81,18 @@ public:
 
   // Get a UTF-32 copy of this string
   String32 utf32() const;
+
+  // Hash function
+  size_t Hash() const;
+
+  // Comparison operator
+  bool operator<(const String8& other) const;
+
+  // Equality operator
+  bool operator==(const String8& other) const;
+
+  // Inequality operator
+  bool operator!=(const String8& other) const;
 
 private:
   char* data_;

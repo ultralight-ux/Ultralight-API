@@ -1,27 +1,22 @@
-///
-/// @file Bitmap.h
-///
-/// @brief The header for the Bitmap class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>
 #include <Ultralight/Geometry.h>
+#include <Ultralight/Buffer.h>
 
 namespace ultralight {
 
 ///
 /// The various Bitmap formats.
 ///
-enum class UExport BitmapFormat : uint8_t {
+enum class BitmapFormat : uint8_t {
   ///
   /// Alpha channel only, 8-bits per pixel.
   ///
@@ -53,8 +48,37 @@ template<typename T>
 class LockedPixels;
 
 ///
-/// @brief  Bitmap container with basic blitting and conversion routines.
+/// Function signature for a user-defined destruction callback to be optionally called when the
+/// Bitmap is destroyed.
 ///
+/// @param  user_data  Pointer to user-defined user-data (this will be the same value as what was
+///                    passed to Bitmap::Create, if any)
+///
+/// @param  data       Pointer to raw Bitmap pixel data.
+///
+typedef void (*DestroyBitmapCallback)(void* user_data, void* data);
+
+///
+/// A thread-safe container for pixel data.
+///
+/// The bitmap class is used to store pixel data in a variety of formats. It intelligently manages
+/// the lifetime of the pixel buffer and provides thread-safe access to the pixel data.
+///
+/// ## Accessing Pixel Data
+///
+/// You can access the underlying pixel data by using the LockPixelsSafe() method. An example
+/// follows:
+///
+/// ```
+/// auto bitmap = Bitmap::Create(100, 100, BitmapFormat::BGRA8_UNORM_SRGB);
+/// auto pixels = bitmap->LockPixelsSafe();
+/// if (pixels && pixels.data()) {
+///   // Zero out the pixel buffer by setting every byte to 0.
+///   memset(pixels.data(), 0, pixels.size());
+/// }
+/// 
+/// // 'pixels' is automatically unlocked when it goes out of scope.
+/// ```
 class UExport Bitmap : public RefCounted {
  public:
   ///
@@ -95,7 +119,7 @@ class UExport Bitmap : public RefCounted {
                                uint32_t alignment);
 
   ///
-  /// Create a Bitmap with existing pixels and configuration.
+  /// Create a Bitmap with existing pixel data, a copy will be made unless should_copy is false.
   ///
   /// @param  width        The width in pixels.
   ///
@@ -119,6 +143,34 @@ class UExport Bitmap : public RefCounted {
   static RefPtr<Bitmap> Create(uint32_t width, uint32_t height, BitmapFormat format,
                                uint32_t row_bytes, const void* pixels, size_t size,
                                bool should_copy = true);
+
+  ///
+  /// Create a Bitmap that wraps existing pixel data, a user-defined destruction callback will be
+  /// called when the Bitmap wants to destroy the data.
+  ///
+  /// @param  width        The width in pixels.
+  ///
+  /// @param  height       The height in pixels.
+  ///
+  /// @param  format       The pixel format to use.
+  ///
+  /// @param  row_bytes    The number of bytes between each row (note that this value should be >=
+  ///                      width * bytes_per_pixel).
+  ///
+  /// @param  pixels       Pointer to raw pixel buffer.
+  ///
+  /// @param  size         Size of the raw pixel buffer.
+  /// 
+  /// @param  user_data    Optional user data that will be passed to destruction_callback when the
+  ///                      Bitmap wants to destroy the pixel data. (Pass nullptr to ignore)
+  ///
+  /// @param  destruction_callback  Callback that will be called upon destruction.
+  ///
+  /// @return  A ref-pointer to a new Bitmap instance.
+  ///
+  static RefPtr<Bitmap> Create(uint32_t width, uint32_t height, BitmapFormat format,
+                               uint32_t row_bytes, const void* pixels, size_t size, 
+                               void* user_data, DestroyBitmapCallback destruction_callback);
 
   ///
   /// Create a bitmap from a deep copy of another Bitmap.
@@ -248,6 +300,21 @@ class UExport Bitmap : public RefCounted {
   ///
   virtual bool DrawBitmap(IntRect src_rect, IntRect dest_rect, RefPtr<Bitmap> src, bool pad_repeat)
       = 0;
+
+  ///
+  /// Encode this Bitmap as a PNG image and store the encoded bytes in a Buffer.
+  ///
+  /// @param  convert_to_rgba  The PNG format expects RGBA format but our bitmap is stored as BGRA,
+  ///                          set this to true to perform the conversion automatically.
+  ///
+  /// @param  convert_to_straight_alpha  The PNG format expects semi-transparent values to be
+  ///                                    stored as straight alpha instead of premultiplied alpha,
+  ///                                    set this to true to perform the conversion automatically.
+  ///
+  /// @return  On success, a buffer containing the encoded bytes, otherwise a null RefPtr.
+  ///
+  virtual RefPtr<Buffer> EncodePNG(bool convert_to_rgba = true,
+                                   bool convert_to_straight_alpha = true) const = 0;
 
   ///
   /// Write this Bitmap out to a PNG image.

@@ -1,4 +1,10 @@
-// Copyright 2022 Ultralight, Inc. All rights reserved.
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>
@@ -15,10 +21,14 @@
 #include <Ultralight/Listener.h>
 #include <Ultralight/Matrix.h>
 #include <Ultralight/MouseEvent.h>
+#include <Ultralight/NetworkRequest.h>
+#include <Ultralight/ConsoleMessage.h>
 #include <Ultralight/Renderer.h>
 #include <Ultralight/Geometry.h>
 #include <Ultralight/RenderTarget.h>
+#include <Ultralight/ImageSource.h>
 #include <Ultralight/ScrollEvent.h>
+#include <Ultralight/GamepadEvent.h>
 #include <Ultralight/platform/Platform.h>
 #include <Ultralight/platform/Config.h>
 #include <Ultralight/platform/GPUDriver.h>

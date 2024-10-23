@@ -1,16 +1,10 @@
-///
-/// @file Logger.h
-///
-/// @brief The header for the Logger interface.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String.h>
@@ -27,20 +21,20 @@ enum class LogLevel : uint8_t {
 };
 
 ///
-/// @brief  Logger interface.
+/// User-defined logging interface.
 ///          
-/// This can be used to log debug messages to the console or to a log file.
+/// The library uses this to display log messages for debugging during development.
 ///
 /// This is intended to be implemented by users and defined before creating the Renderer. 
 /// 
-/// @see Platform::set_file_system.
+/// @see Platform::set_logger()
 ///
 class UExport Logger {
 public:
   virtual ~Logger();
 
   ///
-  /// Called when the library wants to print a message to the log.
+  /// Called when the library wants to display a log message.
   ///
   virtual void LogMessage(LogLevel log_level, const String& message) = 0;
 };

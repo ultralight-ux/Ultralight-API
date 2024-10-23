@@ -1,3 +1,31 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Session.h
+///
+/// Storage for a browsing session (cookies, local storage, etc.).
+///
+/// `#include <Ultralight/CAPI/CAPI_Session.h>`
+///
+/// This class stores data for a unique browsing session (cookies, local storage, application cache,
+/// indexed db. etc.). You can create multiple sessions to isolate data between different browsing
+/// contexts.
+///
+/// ## Default Session
+///
+/// The library has a default session named "default" that is used if no session is specified when
+/// when creating a View.
+///
+/// ## Session Lifetime
+///
+/// Sessions can be either temporary (in-memory only) or persistent (backed to disk).
+///
 #ifndef ULTRALIGHT_CAPI_SESSION_H
 #define ULTRALIGHT_CAPI_SESSION_H
 

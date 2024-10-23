@@ -1,3 +1,21 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Config.h
+///
+/// Core configuration for the renderer.
+///
+/// `#include <Ultralight/CAPI/CAPI_Config.h>`
+///
+/// These are various configuration options that can be used to customize the behavior of the
+/// library. These options can only be set once before creating the Renderer.
+///
 #ifndef ULTRALIGHT_CAPI_CONFIG_H
 #define ULTRALIGHT_CAPI_CONFIG_H
 
@@ -22,28 +40,38 @@ ULExport ULConfig ulCreateConfig();
 ULExport void ulDestroyConfig(ULConfig config);
 
 ///
-/// Set the file path to a writable directory that will be used to store cookies, cached resources, and other persistent data.
+/// A writable OS file path to store persistent Session data in.
 ///
-/// Files are only written to disk when using a persistent Session.
+/// This data may include cookies, cached network resources, indexed DB, etc.
+///
+/// @note Files are only written to the path when using a persistent Session.
 ///
 ULExport void ulConfigSetCachePath(ULConfig config, ULString cache_path);
 
 ///
-/// The library loads bundled resources (eg, cacert.pem and other localized resources) from the
-/// FileSystem API (eg, `file:///resources/cacert.pem`). You can customize the prefix to use when
-/// loading resource URLs by modifying this setting. (Default = "resources/")
+/// The relative path to the resources folder (loaded via the FileSystem API).
+///
+/// The library loads certain resources (SSL certs, ICU data, etc.) from the FileSystem API
+/// during runtime (eg, `file:///resources/cacert.pem`).
+///
+/// You can customize the relative file path to the resources folder by modifying this setting.
+///
+/// (Default = "resources/")
 ///
 ULExport void ulConfigSetResourcePathPrefix(ULConfig config, ULString resource_path_prefix);
 
 ///
-/// The winding order for front-facing triangles. (Default = kFaceWinding_CounterClockwise)
+/// The winding order for front-facing triangles.
 ///
-/// Note: This is only used with custom GPUDrivers
+/// @pre Only used when GPU rendering is enabled for the View.
+///
+/// (Default = kFaceWinding_CounterClockwise)
 ///
 ULExport void ulConfigSetFaceWinding(ULConfig config, ULFaceWinding winding);
 
 ///
 /// The hinting algorithm to use when rendering fonts. (Default = kFontHinting_Normal)
+/// 
 /// @see ULFontHinting
 ///
 ULExport void ulConfigSetFontHinting(ULConfig config, ULFontHinting font_hinting);
@@ -55,45 +83,76 @@ ULExport void ulConfigSetFontHinting(ULConfig config, ULFontHinting font_hinting
 ULExport void ulConfigSetFontGamma(ULConfig config, double font_gamma);
 
 ///
-/// Set user stylesheet (CSS) (Default = Empty).
+/// Global user-defined CSS string (included before any CSS on the page).
+///
+/// You can use this to override default styles for various elements on the page.
+///
+/// @note This is an actual string of CSS, not a file path.
 ///
 ULExport void ulConfigSetUserStylesheet(ULConfig config, ULString css_string);
 
 ///
-/// Set whether or not we should continuously repaint any Views or compositor layers, regardless if
-/// they are dirty or not. This is mainly used to diagnose painting/shader issues. (Default = False)
+/// Whether or not to continuously repaint any Views, regardless if they are dirty.
+///
+/// This is mainly used to diagnose painting/shader issues and profile performance.
+/// 
+/// (Default = False)
 ///
 ULExport void ulConfigSetForceRepaint(ULConfig config, bool enabled);
 
 ///
-/// Set the amount of time to wait before triggering another repaint when a CSS animation is active.
+/// The delay (in seconds) between every tick of a CSS animation.
+///
 /// (Default = 1.0 / 60.0)
 ///
 ULExport void ulConfigSetAnimationTimerDelay(ULConfig config, double delay);
 
 ///
-/// When a smooth scroll animation is active, the amount of time (in seconds) to wait before
-/// triggering another repaint. Default is 60 Hz.
+/// The delay (in seconds) between every tick of a smooth scroll animation.
+///
+/// (Default = 1.0 / 60.0)
 ///
 ULExport void ulConfigSetScrollTimerDelay(ULConfig config, double delay);
 
 ///
-/// The amount of time (in seconds) to wait before running the recycler (will attempt to return
-/// excess memory back to the system). (Default = 4.0)
+/// The delay (in seconds) between every call to the recycler.
+///
+/// The library attempts to reclaim excess memory during calls to the internal recycler. You can
+/// change how often this is run by modifying this value.
+/// 
+/// (Default = 4.0)
 ///
 ULExport void ulConfigSetRecycleDelay(ULConfig config, double delay);
 
 ///
-/// Set the size of WebCore's memory cache for decoded images, scripts, and other assets in bytes.
+/// The size of WebCore's memory cache in bytes.
+///
+/// @note  You should increase this if you anticipate handling pages with large resources, Safari
+///        typically uses 128+ MiB for its cache.
+///
 /// (Default = 64 * 1024 * 1024)
 ///
 ULExport void ulConfigSetMemoryCacheSize(ULConfig config, unsigned int size);
 
 ///
-/// Set the number of pages to keep in the cache. (Default = 0)
+/// The number of pages to keep in the cache. (Default: 0, none)
+///
+/// @note
+/// \parblock
+///
+/// Safari typically caches about 5 pages and maintains an on-disk cache to support typical
+/// web-browsing activities.
+///
+/// If you increase this, you should probably increase the memory cache size as well.
+///
+/// \endparblock
+///
+/// (Default = 0)
 ///
 ULExport void ulConfigSetPageCacheSize(ULConfig config, unsigned int size);
 
+///
+/// The system's physical RAM size in bytes.
 ///
 /// JavaScriptCore tries to detect the system's physical RAM size to set reasonable allocation
 /// limits. Set this to anything other than 0 to override the detected value. Size is in bytes.
@@ -104,15 +163,21 @@ ULExport void ulConfigSetPageCacheSize(ULConfig config, unsigned int size);
 ULExport void ulConfigSetOverrideRAMSize(ULConfig config, unsigned int size);
 
 ///
-/// The minimum size of large VM heaps in JavaScriptCore. Set this to a lower value to make these
-/// heaps start with a smaller initial value.
+/// The minimum size of large VM heaps in JavaScriptCore.
+///
+/// Set this to a lower value to make these heaps start with a smaller initial value.
+///
+/// (Default = 32 * 1024 * 1024)
 ///
 ULExport void ulConfigSetMinLargeHeapSize(ULConfig config, unsigned int size);
 
 ///
-/// The minimum size of small VM heaps in JavaScriptCore. Set this to a lower value to make these
-/// heaps start with a smaller initial value.
+/// The minimum size of small VM heaps in JavaScriptCore.
 ///
+/// Set this to a lower value to make these heaps start with a smaller initial value.
+///
+/// (Default = 1 * 1024 * 1024)
+/// 
 ULExport void ulConfigSetMinSmallHeapSize(ULConfig config, unsigned int size);
 
 ///
@@ -120,17 +185,27 @@ ULExport void ulConfigSetMinSmallHeapSize(ULConfig config, unsigned int size);
 ///
 /// You can set this to a certain number to limit the number of threads to spawn.
 ///
-/// @note  If this value is 0 (the default), the number of threads will be determined at runtime
-///        using the following formula:
+/// @note
+/// \parblock
 ///
-///        max(PhysicalProcessorCount() - 1, 1)
+/// If this value is 0, the number of threads will be determined at runtime using the following
+/// formula:
+///
+///   ```
+///   max(PhysicalProcessorCount() - 1, 1)
+///   ```
+///
+/// \endparblock
 ///
 ULExport void ulConfigSetNumRendererThreads(ULConfig config, unsigned int num_renderer_threads);
 
 ///
-/// The max amount of time (in seconds) to allow Renderer::Update to run per call. The library will
-/// attempt to throttle timers and/or reschedule work if this time budget is exceeded. (Default =
-/// 0.01)
+/// The max amount of time (in seconds) to allow repeating timers to run during each call to
+/// Renderer::Update.
+///
+/// The library will attempt to throttle timers if this time budget is exceeded.
+/// 
+/// (Default = 1.0 / 200.0)
 ///
 ULExport void ulConfigSetMaxUpdateTime(ULConfig config, double max_update_time);
 
@@ -151,7 +226,7 @@ ULExport void ulConfigSetMaxUpdateTime(ULConfig config, double max_update_time);
 ///
 /// (Default = 16)
 ///
-ULExport void ulConfigSetBitmapAlignment(ULConfig config, double bitmap_alignment);
+ULExport void ulConfigSetBitmapAlignment(ULConfig config, unsigned int bitmap_alignment);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -1,3 +1,40 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_View.h
+///
+/// Web-page container rendered to an offscreen surface.
+///
+/// `#include <Ultralight/CAPI/CAPI_View.h>`
+///
+/// The View class is responsible for loading and rendering web-pages to an offscreen surface. It
+/// is completely isolated from the OS windowing system, you must forward all input events to it
+/// from your application.
+///
+/// ## Creating a View
+///
+/// You can create a View by calling ulCreateView():
+///
+/// ```
+/// // Create a ULViewConfig with default values
+/// ULViewConfig view_config = ulCreateViewConfig();
+///
+/// // Create a View, 500 by 500 pixels in size, using the default Session
+/// ULView view = ulCreateView(renderer, 500, 500, view_config, NULL);
+///
+/// // Clean up the ULViewConfig
+/// ulDestroyViewConfig(view_config);
+/// ```
+///
+/// @note When using ulCreateApp(), the library will automatically create a View for you when you
+///       call ulCreateOverlay().
+///
 #ifndef ULTRALIGHT_CAPI_VIEW_H
 #define ULTRALIGHT_CAPI_VIEW_H
 
@@ -22,7 +59,20 @@ ULExport ULViewConfig ulCreateViewConfig();
 ULExport void ulDestroyViewConfig(ULViewConfig config);
 
 ///
-/// Whether to render using the GPU renderer (accelerated) or the CPU renderer (unaccelerated).
+/// Set a user-generated id of the display (monitor, TV, or screen) that the View will be shown on.
+/// 
+/// Animations are driven based on the physical refresh rate of the display. Multiple Views can
+/// share the same display.
+/// 
+/// 
+/// @note This is automatically managed for you when ulCreateApp() is used.
+/// 
+/// @see ulRefreshDisplay()
+/// 
+ULExport void ulViewConfigSetDisplayId(ULViewConfig config, unsigned int display_id);
+
+///
+/// Set whether to render using the GPU renderer (accelerated) or the CPU renderer (unaccelerated).
 ///
 /// This option is only valid if you're managing the Renderer yourself (eg, you've previously
 /// called ulCreateRenderer() instead of ulCreateApp()).
@@ -42,7 +92,7 @@ ULExport void ulViewConfigSetIsAccelerated(ULViewConfig config, bool is_accelera
 ULExport void ulViewConfigSetIsTransparent(ULViewConfig config, bool is_transparent);
 
 ///
-/// The initial device scale, ie. the amount to scale page units to screen pixels. This should be
+/// Set the initial device scale, ie. the amount to scale page units to screen pixels. This should be
 /// set to the scaling factor of the device that the View is displayed on. (Default = 1.0)
 ///
 /// @note 1.0 is equal to 100% zoom (no scaling), 2.0 is equal to 200% zoom (2x scaling)
@@ -50,7 +100,7 @@ ULExport void ulViewConfigSetIsTransparent(ULViewConfig config, bool is_transpar
 ULExport void ulViewConfigSetInitialDeviceScale(ULViewConfig config, double initial_device_scale);
 
 ///
-/// Whether or not the View should initially have input focus. (Default = True)
+/// Set whether or not the View should initially have input focus. (Default = True)
 ///
 ULExport void ulViewConfigSetInitialFocus(ULViewConfig config, bool is_focused);
 
@@ -130,6 +180,18 @@ ULExport unsigned int ulViewGetWidth(ULView view);
 /// Get the height, in pixels.
 ///
 ULExport unsigned int ulViewGetHeight(ULView view);
+
+///
+// Get the display id of the View.
+///
+ULExport unsigned int ulViewGetDisplayId(ULView view);
+
+///
+/// Set the display id of the View.
+/// 
+/// This should be called when the View is moved to another display.
+/// 
+ULExport void ulViewSetDisplayId(ULView view, unsigned int display_id);
 
 ///
 /// Get the device scale, ie. the amount to scale page units to screen pixels.
@@ -385,6 +447,12 @@ ULExport void ulViewSetCreateChildViewCallback(ULView view, ULCreateChildViewCal
 typedef ULView (*ULCreateInspectorViewCallback)(void* user_data, ULView caller, bool is_local,
                                                 ULString inspected_url);
 
+///
+/// Set callback for when the page wants to create a new View to display the local inspector in.
+/// 
+/// You should create a new View in this callback, resize it to your
+/// container, and return it. You are responsible for displaying the returned View.
+/// 
 ULExport void ulViewSetCreateInspectorViewCallback(ULView view, ULCreateInspectorViewCallback callback,
                                                    void* user_data);
 
@@ -473,7 +541,7 @@ ULExport bool ulViewGetNeedsPaint(ULView view);
 /// This will only succeed if you have the inspector assets in your filesystem-- the inspector
 /// will look for file:///inspector/Main.html when it first loads.
 ///
-/// You must handle ULCreateChildViewCallback so that the library has a View to display
+/// You must handle ulViewSetCreateInspectorViewCallback so that the library has a View to display
 /// the inspector in. This function will call the callback only if an inspector view is not
 /// currently active.
 ///

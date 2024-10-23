@@ -1,25 +1,19 @@
-///
-/// @file ScrollEvent.h
-///
-/// @brief The header for the ScrollEvent class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 
 namespace ultralight {
 
 ///
-/// @brief  A generic scroll event.
+/// Scroll event representing a change in scroll state.
 ///
-/// @note   @see View::FireScrollEvent
+/// @see View::FireScrollEvent
 ///
 class ScrollEvent {
  public:
@@ -27,11 +21,8 @@ class ScrollEvent {
   /// The scroll event granularity type
   ///
   enum Type {
-    /// The delta value is interpreted as number of pixels
-    kType_ScrollByPixel,
-
-    /// The delta value is interpreted as number of pages
-    kType_ScrollByPage,
+    kType_ScrollByPixel, ///< The delta value will be interpreted as number of pixels to scroll.
+    kType_ScrollByPage,  ///< The delta value will be interpreted as number of pages to scroll.
   };
 
   ///

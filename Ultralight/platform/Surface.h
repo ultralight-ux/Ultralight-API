@@ -1,16 +1,10 @@
-///
-/// @file Surface.h
-///
-/// @brief The header for the Surface and SurfaceFactory interfaces.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>
@@ -20,22 +14,35 @@
 namespace ultralight {
 
 ///
-/// Offscreen pixel buffer surface. (Premultiplied BGRA 32-bit format)
+/// User-defined pixel buffer surface. 
 ///
-/// When using the CPU renderer, each View is painted to its own Surface.
+/// The library uses this to store pixel data when rendering Views on the CPU (see
+/// ViewConfig::is_accelerated).
 ///
-/// You can provide your own Surface implementation to make the renderer paint directly to a block
-/// of memory controlled by you (this is useful for lower-latency uploads to GPU memory or other
-/// platform-specific bitmaps).
+/// You can provide the library with your own Surface implementation to reduce the latency of
+/// displaying pixels in your application (Views will be drawn directly to a block of memory
+/// controlled by you).
+///
+/// When a View is rendered on the CPU, you can retrieve the backing Surface via View::surface().
+///
+/// @pre This is automatically managed for you when using App::Create(), if you want to override
+///      Surface or SurfaceFactory, you'll need to use Renderer::Create() instead.
+///
+/// ## Default Implementation
 ///
 /// A default Surface implementation, BitmapSurface, is automatically provided by the library when
 /// you call Renderer::Create() without defining a custom SurfaceFactory.
 ///
-/// To provide your own custom Surface implementation, you should inherit from this class, handle
-/// the virtual member functions, and then define a custom SurfaceFactory that creates/destroys an
-/// instance of your class. After that, you should pass an instance of your custom SurfaceFactory
-/// class to `Platform::instance().set_font_loader()` before calling App::Create() or
-/// Renderer::Create().
+/// You should cast the Surface to a BitmapSurface to access the underlying Bitmap.
+///
+/// ## Setting the Surface Implementation
+///
+/// To define your own implementation, you should inherit from this class, handle the virtual
+/// member functions, and then define a custom SurfaceFactory that creates/destroys an
+/// instance of your class.
+///
+/// After that, you should pass an instance of your custom SurfaceFactory class to
+/// Platform::set_surface_factory() before calling Renderer::Create().
 ///
 class UExport Surface {
  public:
@@ -64,7 +71,7 @@ class UExport Surface {
   ///
   /// Lock the pixel buffer and get a pointer to the beginning of the data for reading/writing.
   ///
-  /// Native pixel format is premultiplied BGRA 32-bit (8 bits per channel).
+  /// @note Native pixel format is premultiplied BGRA 32-bit (8 bits per channel).
   ///
   virtual void* LockPixels() = 0;
 
@@ -122,13 +129,17 @@ class UExport Surface {
 };
 
 ///
-/// SurfaceFactory can be used to provide your own native Surface implementation.
+/// User-defined factory to provide your own surface implementation.
 ///
-/// This can be used to wrap a platform-specific GPU texture, Windows DIB, macOS CGImage, or any
-/// other pixel buffer target for display on screen.
+/// The library uses this to create/destroy Surface instances when rendering Views on the CPU.
+///
+/// @pre This is automatically managed for you when using App::Create(), if you want to override
+///      Surface or SurfaceFactory, you'll need to use Renderer::Create() instead.
+///
+/// ## Setting the Surface Factory
 ///
 /// The default factory creates/destroys a BitmapSurface but you can override this by providing your
-/// own factory to Platform::set_surface_factory.
+/// own factory to Platform::set_surface_factory().
 ///
 class UExport SurfaceFactory {
  public:
@@ -146,7 +157,12 @@ class UExport SurfaceFactory {
 };
 
 ///
-/// The default Surface implementation, backed by a Bitmap.
+/// The default surface implementation, backed by a bitmap.
+///
+/// This is automatically provided by the library when you call Renderer::Create() without defining
+/// a custom SurfaceFactory.
+///
+/// This implementation uses a Bitmap to store pixel data (retrieve it via BitmapSurface::bitmap()).
 ///
 class UExport BitmapSurface : public Surface {
  public:

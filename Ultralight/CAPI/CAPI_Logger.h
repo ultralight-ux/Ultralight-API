@@ -1,3 +1,24 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Logger.h
+///
+/// User-defined logging interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_Logger.h>`
+///   
+/// The library uses this to display log messages for debugging during development.
+///
+/// This is intended to be implemented by users and defined before creating the Renderer. 
+/// 
+/// @see ulPlatformSetLogger()
+///
 #ifndef ULTRALIGHT_CAPI_LOGGER_H
 #define ULTRALIGHT_CAPI_LOGGER_H
 

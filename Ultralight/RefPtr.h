@@ -1,16 +1,10 @@
-///
-/// @file RefPtr.h
-///
-/// @brief The header for all ref-counting utilities.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 /*
 * Portions of the below code are derived from 'RefPtr.h' from Apple's WTF,
 * with the following license header:

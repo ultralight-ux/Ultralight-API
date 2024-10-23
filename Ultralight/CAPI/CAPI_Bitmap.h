@@ -1,3 +1,37 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Bitmap.h
+///
+/// A thread-safe container for pixel data.
+///
+/// `#include <Ultralight/CAPI/CAPI_Bitmap.h>`
+///
+/// The bitmap class is used to store pixel data in a variety of formats. It intelligently manages
+/// the lifetime of the pixel buffer and provides thread-safe access to the pixel data.
+///
+/// ## Accessing Pixel Data
+///
+/// To access the pixel data, you must first lock the pixels using ulBitmapLockPixels(). This will
+/// return a pointer to the pixel buffer. An example follows:
+///
+/// ```
+/// void* pixels = ulBitmapLockPixels(bitmap);
+/// if (pixels) {
+///   // Zero out the pixel buffer
+///   memset(pixels, 0, ulBitmapGetSize(bitmap));
+/// }
+///
+/// // Unlock the pixels when you're done.
+/// ulBitmapUnlockPixels(bitmap);
+/// ```
+///
 #ifndef ULTRALIGHT_CAPI_BITMAP_H
 #define ULTRALIGHT_CAPI_BITMAP_H
 

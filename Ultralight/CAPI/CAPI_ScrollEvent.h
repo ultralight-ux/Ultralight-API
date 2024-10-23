@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_ScrollEvent.h
+///
+/// Scroll event interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_ScrollEvent.h>`
+///
+/// This file defines the C API for scroll events.
+///
 #ifndef ULTRALIGHT_CAPI_SCROLLEVENT_H
 #define ULTRALIGHT_CAPI_SCROLLEVENT_H
 
@@ -12,7 +29,7 @@ extern "C" {
  *****************************************************************************/
 
 ///
-/// Create a scroll event, @see ScrollEvent for help using this function.
+/// Create a scroll event, see ScrollEvent in the C++ API for help using this function.
 ///
 ULExport ULScrollEvent ulCreateScrollEvent(ULScrollEventType type, int delta_x, int delta_y);
 

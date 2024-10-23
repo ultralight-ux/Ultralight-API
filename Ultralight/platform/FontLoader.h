@@ -1,16 +1,10 @@
-///
-/// @file FontLoader.h
-///
-/// @brief The header for the FontLoader interface.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String.h>
@@ -63,22 +57,31 @@ class UExport FontFile : public RefCounted {
 };
 
 ///
-/// @brief  Font Loader interface, used for all font lookup operations.
+/// User-defined font loader interface.
+/// 
+/// The library uses this to load a font file (eg, `Arial.ttf`) for a given font description (eg, 
+/// `font-family: Arial;`).
 ///
-/// Every operating system has its own library of installed system fonts. The FontLoader interface
-/// is used to lookup these fonts and fetch the actual font data (raw TTF/OTF file data) for a given
-/// font description.
+/// Every OS has its own library of installed system fonts. The FontLoader interface is used to
+/// lookup these fonts and fetch the actual font data (raw TTF/OTF file data) for a given font
+/// description.
 ///
-/// AppCore automatically provides a platform-specific implementation of this that loads installed
-/// fonts from the OS when you call App::Create().
+/// You can provide the library with your own font loader implementation so that you can bundle
+/// fonts with your application rather than relying on the system's installed fonts.
+/// 
+/// ## Default Implementation
 ///
-/// If you are using Renderer::Create() instead, you will need to provide your own implementation
-/// via `Platform::instance().set_font_loader(). For convenience, you can still use AppCore's font
-/// loader implementation-- see the helper functions defined in <AppCore/Platform.h>.
+/// A platform-specific implementation of FontLoader is provided for you when you call
+/// App::Create().
 ///
-/// To provide your own custom FontLoader implementation, you should inherit from this class, handle
-/// the virtual member functions, and then pass an instance of your class to
-/// `Platform::instance().set_font_loader()` before calling Renderer::Create() or App::Create().
+/// If you are using Renderer::Create(), you **must** provide your own. You can still use AppCore's
+/// implementation however-- see the helper functions defined in <AppCore/Platform.h>.
+///
+/// ## Setting the Font Loader
+///
+/// To provide your own custom FontLoader implementation, you should inherit from this class,
+/// handle the virtual member functions, and then pass an instance of your class to
+/// Platform::set_font_loader() before calling Renderer::Create() or App::Create().
 ///
 class UExport FontLoader {
  public:
@@ -87,14 +90,14 @@ class UExport FontLoader {
   ///
   /// Fallback font family name. Will be used if all other fonts fail to load.
   ///
-  /// @note  This font should be guaranteed to exist (eg, FontLoader::Load
-  ///        won't fail when passed this font family name).
+  /// @note  This font should be guaranteed to exist (eg, FontLoader::Load won't fail when passed
+  ///        this font family name).
   ///
   virtual String fallback_font() const = 0;
 
   ///
-  /// Fallback font family name that can render the specified characters. This is mainly used to
-  /// support CJK (Chinese, Japanese, Korean) text display.
+  /// Fallback font family name that can render the specified characters. Mainly used to support
+  /// CJK (Chinese, Japanese, Korean) text display.
   ///
   /// @param  characters  One or more UTF-16 characters. This is almost always a single character.
   ///
@@ -102,7 +105,7 @@ class UExport FontLoader {
   ///
   /// @param  italic      Whether or not italic is requested.
   ///
-  /// @return  Should return a font family name that can render the text.
+  /// @return  Returns a font family name that can render the text.
   ///
   virtual String fallback_font_for_characters(const String& characters, int weight,
                                               bool italic) const = 0;

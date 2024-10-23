@@ -1,16 +1,10 @@
-///
-/// @file RenderTarget.h
-///
-/// @brief The header for the RenderTarget struct.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/Bitmap.h>
@@ -21,11 +15,21 @@ namespace ultralight {
 #pragma pack(push, 1)
 
 ///
-/// @brief  Rendering details for a View, to be used with your own GPUDriver
+/// Offscreen render target, used when rendering Views via the GPU renderer.
 ///
-/// When using your own GPUDriver, each View is rendered to an offscreen texture that you can
-/// display on a 3D quad in your application. This struct provides all the details you need to
-/// display the corresponding texture in your application.
+/// When a View is rendered via the GPU renderer (see View::is_accelerated), it will be rendered to
+/// an offscreen render target (View::render_target) that you can display in your application.
+///
+/// This is intended to be used with a custom GPUDriver implementation in a game or similar 
+/// application.
+///
+/// ## Displaying the Render Target
+///
+/// To display the View's render target, you should:
+///
+///  1. Retrieve the underlying texture via RenderTarget::texture_id().
+///  2. Bind the texture using your custom GPUDriver implementation.
+///  3. Draw a textured quad with the provided UV coordinates (RenderTarget::uv_coords()).
 ///
 struct UExport RenderTarget {
   ///
@@ -44,8 +48,8 @@ struct UExport RenderTarget {
   uint32_t height;
 
   ///
-  /// The GPUDriver-specific texture ID (you should bind the texture using your implementation of
-  /// GPUDriver::BindTexture before drawing a quad).
+  /// The GPUDriver-specific texture ID (you should bind the texture using your custom GPUDriver
+  /// implementation before drawing a quad).
   ///
   uint32_t texture_id;
 

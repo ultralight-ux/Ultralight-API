@@ -1,15 +1,78 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
 ///
-/// @file CAPI.h
+/// @file AppCore/CAPI.h
 ///
-/// @brief The C-language API for AppCore
+/// AppCore API interface.
 ///
-/// @author
+/// `#include <AppCore/CAPI.h>`
 ///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
+/// AppCore is a convenient windowing system for desktop platforms built on top of the
+/// Ultralight renderer.
+/// 
+/// It automatically sets up the Renderer, creates a run loop, and handles all window creation,
+/// painting, and platform-specific operations for you.
+/// 
+/// ## Creating the App
+/// 
+/// Call ulCreateApp() to initialize the library and create the App singleton:
 ///
-/// Website: <http://ultralig.ht>
+/// ```
+/// // Create the App using default config and settings
+/// ULApp app = ulCreateApp(NULL, NULL);
+/// ```
 ///
-/// Copyright (C) 2021 Ultralight, Inc. All rights reserved.
+/// ## Creating a Window
+///
+/// Call ulCreateWindow() to create one or more windows during the lifetime of your app:
+///
+/// ```
+/// ULWindow window = ulCreateWindow(ulAppGetMainMonitor(app), 1024, 768, false,
+///                                  kWindowFlags_Titled | kWindowFlags_Resizable);
+/// ```
+///
+/// ## Creating an Overlay in a Window
+///
+/// Each Window can have one or more Overlay instances. Overlays are used to display web-based
+/// content in a portion of the window.
+///
+/// Call ulCreateOverlay() to create an overlay in a window:
+///
+/// ```
+/// ULOverlay overlay = ulCreateOverlay(window, 1024, 768, 0, 0);
+/// ```
+///
+/// Each Overlay has a View instance that you can use to load web content into:
+///
+/// ```
+/// ULString url = ulCreateString("https://google.com");
+/// ULView view = ulOverlayGetView(overlay);
+/// ulViewLoadURL(view, url);
+/// ulDestroyString(url);
+/// ```
+///
+/// ## Running the App
+///
+/// Call ulAppRun() to start the main run loop:
+///
+/// ```
+/// #include <AppCore/CAPI.h>
+///
+/// int main() {
+///   // Initialize app, window, overlay, etc. here...
+///
+///   ulAppRun(app);
+///
+///   ulDestroyApp(app);
+///   return 0;
+/// }
+/// ```
 ///
 #ifndef APPCORE_CAPI_H
 #define APPCORE_CAPI_H

@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_MouseEvent.h
+///
+/// Mouse event interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_MouseEvent.h>`
+///
+/// This file defines the C API for mouse events.
+///
 #ifndef ULTRALIGHT_CAPI_MOUSEEVENT_H
 #define ULTRALIGHT_CAPI_MOUSEEVENT_H
 
@@ -12,7 +29,7 @@ extern "C" {
  *****************************************************************************/
 
 ///
-/// Create a mouse event, @see MouseEvent for help using this function.
+/// Create a mouse event, see MouseEvent in the C++ API for help using this function.
 ///
 ULExport ULMouseEvent ulCreateMouseEvent(ULMouseEventType type, int x, int y, ULMouseButton button);
 

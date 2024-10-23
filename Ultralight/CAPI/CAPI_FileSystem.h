@@ -1,3 +1,27 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_FileSystem.h
+///
+/// User-defined file system interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_FileSystem.h>`
+///
+/// The library uses this to load file data (ie, raw file bytes) for a given file URL 
+/// (eg, `file:///page.html`) .
+///
+/// You can provide the library with your own FileSystem implementation (ULFileSystem) so that file
+/// data is provided directly by your application (eg, from memory, from a virtual file system,
+/// etc).
+///
+/// @see ulPlatformSetFileSystem
+/// 
 #ifndef ULTRALIGHT_CAPI_FILESYSTEM_H
 #define ULTRALIGHT_CAPI_FILESYSTEM_H
 
@@ -50,6 +74,12 @@ typedef ULString (*ULFileSystemGetFileCharsetCallback)(ULString path);
 ///
 typedef ULBuffer (*ULFileSystemOpenFileCallback)(ULString path);
 
+/// 
+/// User-defined file system interface.
+///
+/// You should implement each of these callbacks, then pass an instance of this struct containing
+/// your callbacks to ulPlatformSetFileSystem().
+///
 typedef struct {
   ULFileSystemFileExistsCallback file_exists;
   ULFileSystemGetFileMimeTypeCallback get_file_mime_type;

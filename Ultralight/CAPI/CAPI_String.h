@@ -1,3 +1,21 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_String.h
+///
+/// Unicode string container (natively UTF-8).
+///
+/// `#include <Ultralight/CAPI/CAPI_String.h>`
+///
+/// This class is used to represent strings in Ultralight. It can be created from a variety of
+/// string types (ASCII, UTF-8, UTF-16) and accessed as a null-terminated UTF-8 buffer.
+///
 #ifndef ULTRALIGHT_CAPI_STRING_H
 #define ULTRALIGHT_CAPI_STRING_H
 

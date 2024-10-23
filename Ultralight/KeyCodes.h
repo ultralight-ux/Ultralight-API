@@ -1,16 +1,10 @@
-///
-/// @file KeyCodes.h
-///
-/// @brief The header for the KeyCodes definitions.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a fast, lightweight, HTML UI engine
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 
 namespace ultralight {

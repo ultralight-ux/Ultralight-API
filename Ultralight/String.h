@@ -1,16 +1,10 @@
-///
-/// @file String.h
-///
-/// @brief The header for the String class.
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/String8.h>
@@ -20,12 +14,25 @@
 namespace ultralight {
 
 ///
-/// @brief  UTF-8 String container with conversions for UTF-16 and UTF-32.
+/// Unicode string container with conversions for UTF-8, UTF-16, and UTF-32.
 ///
-/// @note   Internally, all strings are represented as String8 (UTF-8).
+/// This class is used to represent strings in Ultralight. It can be created from a variety of
+/// string types and converted to a number of unicode string types.
+///
+/// ## Accessing string data
+///
+/// Strings are natively stored in a null-terminated UTF-8 format. You can access the UTF-8 bytes
+/// using the `utf8()` method:
+///
+/// ```
+/// String str("Hello, world!");
+///
+/// // Print the UTF-8 data (guaranteed to be null-terminated)
+/// printf("%s\n", str.utf8().data());
+/// ```
 ///
 class UExport String {
-public:
+ public:
   ///
   /// Create empty string
   ///
@@ -67,6 +74,11 @@ public:
   String(const String& other);
 
   ///
+  /// Move constructor
+  ///
+  String(String&& other);
+
+  ///
   /// Destructor
   ///
   ~String();
@@ -77,14 +89,22 @@ public:
   String& operator=(const String& other);
 
   ///
+  /// Move assignment operator
+  ///
+  String& operator=(String&& other);
+
+  ///
   /// Append string with another
   ///
   String& operator+=(const String& other);
-  
+
   ///
   /// Concatenation operator
   ///
-  inline friend String operator+(String lhs, const String& rhs) { lhs += rhs; return lhs; }
+  inline friend String operator+(String lhs, const String& rhs) {
+    lhs += rhs;
+    return lhs;
+  }
 
   ///
   /// Get native UTF-8 string
@@ -111,10 +131,28 @@ public:
   ///
   bool empty() const { return str_.empty(); }
 
-private:
+  ///
+  /// Hash function
+  ///
+  size_t Hash() const;
+
+  ///
+  /// Comparison operator
+  ///
+  bool operator<(const String& other) const;
+
+  ///
+  /// Equality operator
+  ///
+  bool operator==(const String& other) const;
+
+  ///
+  /// Inequality operator
+  ///
+  bool operator!=(const String& other) const;
+
+ private:
   String8 str_;
 };
 
-
-}  // namespace ultralight
-
+} // namespace ultralight

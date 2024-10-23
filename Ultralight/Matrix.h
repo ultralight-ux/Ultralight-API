@@ -1,16 +1,10 @@
-///
-/// @file Matrix.h
-///
-/// @brief The header for Matrix helpers
-///
-/// @author
-///
-/// This file is a part of Ultralight, a next-generation HTML renderer.
-///
-/// Website: <http://ultralig.ht>
-///
-/// Copyright (C) 2022 Ultralight, Inc. All rights reserved.
-///
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
 #pragma once
 #include <Ultralight/Defines.h>
 #include <Ultralight/RefPtr.h>
@@ -23,7 +17,7 @@ namespace ultralight {
 ///
 struct UExport Matrix4x4 {
   ///
-  /// Raw 4x4 matrix as an array
+  /// Raw 4x4 matrix as an array in column-major order.
   ///
   float data[16];
 
@@ -39,6 +33,9 @@ struct UExport Matrix4x4 {
 struct UExport alignas(16) Matrix {
   typedef double Aligned4x4[4][4];
 
+  ///
+  /// Raw matrix data in column-major order (eg, `data[column][row]`)
+  ///
   Aligned4x4 data;
 
   ///

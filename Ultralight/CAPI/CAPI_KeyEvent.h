@@ -1,3 +1,20 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_KeyEvent.h
+///
+/// Key event interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_KeyEvent.h>`
+///
+/// This file defines the C API for various key events.
+///
 #ifndef ULTRALIGHT_CAPI_KEYEVENT_H
 #define ULTRALIGHT_CAPI_KEYEVENT_H
 
@@ -12,7 +29,7 @@ extern "C" {
  ******************************************************************************/
 
 ///
-/// Create a key event, @see KeyEvent for help with the following parameters.
+/// Create a key event, see KeyEvent in the C++ API for help with the parameters.
 ///
 ULExport ULKeyEvent ulCreateKeyEvent(ULKeyEventType type, unsigned int modifiers,
                                      int virtual_key_code, int native_key_code, ULString text,

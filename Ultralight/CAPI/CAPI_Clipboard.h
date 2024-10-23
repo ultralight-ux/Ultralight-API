@@ -1,3 +1,22 @@
+/**************************************************************************************************
+ *  This file is a part of Ultralight.                                                            *
+ *                                                                                                *
+ *  See <https://ultralig.ht> for licensing and more.                                             *
+ *                                                                                                *
+ *  (C) 2024 Ultralight, Inc.                                                                     *
+ **************************************************************************************************/
+
+///
+/// @file CAPI_Clipboard.h
+///
+/// User-defined clipboard interface.
+///
+/// `#include <Ultralight/CAPI/CAPI_Clipboard.h>`
+///
+/// The library uses this to read and write data to the system's clipboard.
+///
+/// @see ulPlatformSetClipboard()
+///
 #ifndef ULTRALIGHT_CAPI_CLIPBOARD_H
 #define ULTRALIGHT_CAPI_CLIPBOARD_H
 
@@ -28,6 +47,12 @@ typedef void (*ULClipboardReadPlainTextCallback)(ULString result);
 ///
 typedef void (*ULClipboardWritePlainTextCallback)(ULString text);
 
+///
+/// User-defined clipboard interface.
+///
+/// You should implement each of these callbacks, then pass an instance of this struct containing
+/// your callbacks to ulPlatformSetClipboard().
+///
 typedef struct {
   ULClipboardClearCallback clear;
   ULClipboardReadPlainTextCallback read_plain_text;
